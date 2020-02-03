@@ -2,7 +2,7 @@ import React from 'react';
 import { SketchPicker } from 'react-color';
 import Circle from './Circle';
 import Input from './Input';
-import "./style.css"
+import './style.css';
 
 const WIDTH_SLIDER = 500;
 export default class Slider extends React.Component {
@@ -26,6 +26,7 @@ export default class Slider extends React.Component {
         this.sort_by = this.sort_by.bind(this);
         this.table = this.table.bind(this);
         this.colorTable = this.colorTable.bind(this)
+        // this.refs = React.createRef();
     }
 
     onMouseDown(value) {
@@ -263,7 +264,7 @@ export default class Slider extends React.Component {
     }
 
     // hàm hiển thị các giá trị của bảng màu.
-    table() {
+    table = () => {
         let range = this.state.range
         let fillTable = Object.values(range).sort(this.sort_by('offsetX', true, parseInt));
         return (
@@ -271,7 +272,7 @@ export default class Slider extends React.Component {
         )
     }
 
-    convertColor(color) => {
+    convertColor = (color) => {
     let hex = Number(color).toString(16);
     if (hex.length < 2) {
         hex = '0' + hex

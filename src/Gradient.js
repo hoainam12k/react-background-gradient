@@ -1,6 +1,6 @@
 import React from 'react';
 import { SketchPicker } from 'react-color';
-import "./styles.css"
+// import "./styles.css"
 
 
 class Range extends React.Component {
@@ -206,4 +206,4 @@ export default class Gradient extends React.Component {
             </div>
         )
     }
-}   
+}
