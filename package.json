@@ -2,7 +2,7 @@
   "name": "react-background-gradient",
   "version": "1.0.0",
   "description": "",
-  "main": "src/Gradient.js",
+  "main": "src/Slider.js",
   "scripts": {
     "build": "./node_modules/.bin/babel src/Gradient.js --out-file index.js"
   },
