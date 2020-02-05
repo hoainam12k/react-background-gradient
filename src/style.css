@@ -23,18 +23,18 @@ body {
   /* border: 3px solid white; */
 }
 
-#table{
+.table{
   align-items: center; 
   margin: 20px;
   width: 500px;
   height: 200px;
 }
 
-#color{
+.color{
   display: flex;
 }
 
-#list_color{
+.list_color{
   margin: 20px;
   font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
   border-collapse: collapse;
@@ -68,7 +68,7 @@ body {
     transform-origin: center left;
 }
 
-#picker-circle{
+.picker-circle{
   width: 10px;
   height: 10px;
   border-radius: 50%;
@@ -78,7 +78,7 @@ body {
 }
 
 
-#change{
+.change{
   display: flex;
 }
 #input{
@@ -99,7 +99,7 @@ body {
   background-color: #cca;
 }
 
-#fillColor {
+.fillColor {
   position: relative;
   border-radius: 5px;
   height: 15px;

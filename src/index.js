@@ -2,8 +2,7 @@ import React from 'react';
 import { SketchPicker } from 'react-color';
 import Circle from './Circle';
 import Input from './Input';
-import './style.css';
-
+import "./style.css"
 const WIDTH_SLIDER = 500;
 export default class Slider extends React.Component {
     constructor(props) {
@@ -17,25 +16,39 @@ export default class Slider extends React.Component {
             angle: 0,
         }
         this.isDragging = false;
-        this.onMouseDown = this.onMouseDown.bind(this);
-        this.handleChangeComplete = this.handleChangeComplete.bind(this);
-        this.mixColor = this.mixColor.bind(this);
-        this.onClick = this.onClick.bind(this);
-        this.onClickThumb = this.onClickThumb.bind(this);
-        this.deleteColor = this.deleteColor.bind(this);
-        this.sort_by = this.sort_by.bind(this);
-        this.table = this.table.bind(this);
-        this.colorTable = this.colorTable.bind(this)
-        // this.refs = React.createRef();
     }
 
-    onMouseDown(value) {
+    // onMouseMove = (obj, shiftX, value) => {
+    //     return event => {
+    //         let newLeft = event.clientX - shiftX - document.getElementById(value).getBoundingClientRect().left; // độ dịch chuyển mới so với vị trị cũ của thumb
+    //         if (newLeft < 0) {
+    //             newLeft = 0;
+    //         }
+    //         if (newLeft > 500) {
+    //             newLeft = 500;
+    //         }
+    //         let range = this.state.range
+
+    //         range[value].offsetX = newLeft / 5;
+
+    //         obj.setState({ range: range })
+
+    //         document.getElementById(value).style.left = newLeft + 'px';
+    //         this.isDragging = true;
+    //     }
+    // }
+    // onMouseUp = () => {
+    //     document.removeEventListener('mouseup', this.onMouseUp);
+    //     document.removeEventListener('mousemove', this.onMouseMove);
+    // }
+
+    onMouseDown = value => {
         return (event) => {
             event = event || window.event;
             event.preventDefault();
             const obj = this;
             let range = this.state.range
-            let shiftX = event.clientX - this.refs[value].getBoundingClientRect().left; // lấy khoảng cách giữa thumb và đầu slider
+            let shiftX = event.clientX - document.getElementById(value).getBoundingClientRect().left; // lấy khoảng cách giữa thumb và đầu slider
             document.addEventListener('mousemove', onMouseMove);
             document.addEventListener('mouseup', onMouseUp);
             function onMouseMove(event) {
@@ -46,11 +59,12 @@ export default class Slider extends React.Component {
                 if (newLeft > 500) {
                     newLeft = 500;
                 }
+
                 range[value].offsetX = newLeft / 5;
 
                 obj.setState({ range: range })
 
-                obj.refs[value].style.left = newLeft + 'px';
+                document.getElementById(value).style.left = newLeft + 'px';
                 this.isDragging = true;
 
             }
@@ -59,11 +73,14 @@ export default class Slider extends React.Component {
                 document.removeEventListener('mouseup', onMouseUp);
                 document.removeEventListener('mousemove', onMouseMove);
             }
+
+
         }
+
     }
 
     //hàm xử lý màu của react-color, đồng thời lấy màu hiện tại của bảng màu.
-    handleChangeComplete(color) {
+    handleChangeComplete = (color) => {
         let temp = this.state.range;
         let range_val = this.state.rangeVal;
         //
@@ -81,7 +98,7 @@ export default class Slider extends React.Component {
         this.setState({ background: background, range: temp });
     };
 
-    mixColor(color1, color2) {
+    mixColor = (color1, color2) => {
         let ratio = 0.5;
         let hex = function (x) {
             x = x.toString(16);
@@ -100,7 +117,7 @@ export default class Slider extends React.Component {
     }
 
     // sự kiện click vào slider để thêm thumb mới.
-    onClick(e) {
+    onClick = (e) => {
         if (!this.isDragging) {
             let offset = Math.round(e.nativeEvent.offsetX / 5); //lấy vị trí hiện tại trên thanh slider
             if (offset < 0) offset = 0;
@@ -201,10 +218,10 @@ export default class Slider extends React.Component {
     }
 
     // hàm lấy thumb hiện tại khi click vào
-    onClickThumb(value, range) {
+    onClickThumb = (value, range) => {
         let background = { rgba: { r: range.r, g: range.g, b: range.b, a: range.a }, hex: range.hex };
-        this.refs[this.state.first].style.border = '';
-        Object.assign(this.refs[value].style, { border: '0.7px solid white' });
+        document.getElementById(this.state.first).style.border = '';
+        Object.assign(document.getElementById(value).style, { border: '0.7px solid white' });
         this.setState({
             rangeVal: value,
             background: background,
@@ -213,7 +230,7 @@ export default class Slider extends React.Component {
     }
 
     // hàm xóa thumb khỏi slider và màu khỏi bảng màu
-    deleteColor(offsetX) {
+    deleteColor = (offsetX) => {
         let range = this.state.range;
         let objectRange = Object.entries(range);
         let length = objectRange.length;
@@ -235,8 +252,8 @@ export default class Slider extends React.Component {
             this.setState({ range: range, rangeVal: rangeVal[0][0], first: rangeVal[0][0] })
         }
     }
-    // hàm sắp xếp object, với đầu vào là filed là trường cần mong muốn sắp xếp, reverse dưới dạng boolean có muốn sắp xếp ngưowjc hay không, trường primer là trường định dạng giá trị của trường field là int hay float....
-    sort_by(field, reverse, primer) {
+    // hàm sắp xếp object, với đầu vào là filed là trường cần mong muốn sắp xếp, reverse dưới dạng boolean có muốn sắp xếp ngưowjc hay không, trường primer là trường định dạng giá trị của trường field là int hay float.... 
+    sort_by = (field, reverse, primer) => {
         const key = primer ?
             function (x) {
                 return primer(x[field])
@@ -251,136 +268,132 @@ export default class Slider extends React.Component {
             return a = key(a), b = key(b), reverse * ((a > b) - (b > a));
         }
     }
-
-    colorTable = (val) => {
-        return (
-            <tr>
-                <td style={{ background: val.hex, width: '2px', height: '2px', border: '0.7px solid white' }}></td>
-                <td>{val.hex}</td>
-                <td>{val.offsetX}</td>
-                <td><button onClick={() => this.deleteColor(val.offsetX)}>Delete</button></td>
-            </tr>
-        )
-    }
-
     // hàm hiển thị các giá trị của bảng màu.
     table = () => {
         let range = this.state.range
         let fillTable = Object.values(range).sort(this.sort_by('offsetX', true, parseInt));
         return (
-            Object.values(fillTable).map(this.colorTable)
+            Object.values(fillTable).map((val, index) => {
+                return (
+                    <tr>
+                        <td style={{ background: val.hex, width: '2px', height: '2px', border: '0.7px solid white' }}></td>
+                        <td>{val.hex}</td>
+                        <td>{val.offsetX}</td>
+                        <td><button onClick={() => this.deleteColor(val.offsetX)}>Delete</button></td>
+                    </tr>
+                )
+            })
         )
     }
 
     convertColor = (color) => {
-    let hex = Number(color).toString(16);
-    if (hex.length < 2) {
-        hex = '0' + hex
+        let hex = Number(color).toString(16);
+        if (hex.length < 2) {
+            hex = '0' + hex
+        }
+        return hex;
     }
-    return hex;
-}
 
-rgbToHex = (r, g, b) => {
-    let hex = '#' + this.convertColor(r) + this.convertColor(g) + this.convertColor(b);
-    return hex
-}
-
-componentWillMount() {
-    this.setState({ range: this.props.range, angle: this.props.angle })
-}
-
-componentDidMount() {
-    document.getElementsByClassName(`thumb`)[0].style.border = '0.7px solid white';
-}
-
-componentDidUpdate() {
-    document.getElementById(this.state.first).style.border = '0.7px solid white';
-}
-
-handleAngle = (angle) => {
-    this.setState({ angle: angle })
-}
-
-editAngle = (value) => {
-    this.setState({ angle: value })
-}
-
-render() {
-    const { range } = this.state;
-    let val = Object.values(range);
-    let background1 = `-webkit-linear-gradient(${this.state.angle}deg, `;
-    let background2 = `-webkit-linear-gradient(0deg, `;
-    let color_val = val.sort(this.sort_by('offsetX', true, parseInt));
-    for (var i = color_val.length - 1; i >= 0; i--) {
-        background1 = background1 + `rgba(${color_val[i].r},${color_val[i].g},${color_val[i].b},${color_val[i].a}) ${color_val[i].offsetX}%,`;
-        background2 = background2 + `rgba(${color_val[i].r},${color_val[i].g},${color_val[i].b},${color_val[i].a}) ${color_val[i].offsetX}%,`;
-
+    rgbToHex = (r, g, b) => {
+        let hex = '#' + this.convertColor(r) + this.convertColor(g) + this.convertColor(b);
+        return hex
     }
-    background1 = background1.substring(0, background1.length - 1) + ')';
-    background2 = background2.substring(0, background2.length - 1) + ')';
-    return (
-        <div id="example">
-            <div id="slider"
-                style={{}}
-                className="slider"
-                ref={
-                    el => this.slider = el
-                }
-            >
-                <div id="fillColor"
-                    style={{ width: WIDTH_SLIDER, background: background2 }}
-                    onClick={this.onClick}>
 
-                </div>
-                {Object.entries(this.state.range).map((value, index) =>
-                    <div
-                        name={value[0]}
-                        id={value[0]}
-                        style={{
-                            left: Math.round(this.state.range[value[0]].offsetX * 5),
-                            background: `rgb(${value[1].r},${value[1].g},${value[1].b})`
-                        }}
-                        className={`thumb ${value}`}
-                        ref={
-                            value[0]
-                        }
-                        onMouseDown={
-                            this.onMouseDown(value[0])
-                        }
-                        onClick={() => this.onClickThumb(value[0], value[1])}
-                    >
+    componentWillMount() {
+        this.setState({ range: this.props.range, angle: this.props.angle })
+    }
+    componentDidMount() {
+
+        document.getElementsByClassName(`thumb`)[0].style.border = '0.7px solid white';
+    }
+    componentDidUpdate() {
+        document.getElementById(this.state.first).style.border = '0.7px solid white';
+    }
+
+    handleAngle = (angle) => {
+        this.setState({ angle: angle })
+    }
+
+    editAngle = (value) => {
+        this.setState({ angle: value })
+    }
+    render() {
+        const { range } = this.state;
+        let val = Object.values(range);
+        let background1 = `-webkit-linear-gradient(${this.state.angle}deg, `;
+        let background2 = `-webkit-linear-gradient(0deg, `;
+        let color_val = val.sort(this.sort_by('offsetX', true, parseInt));
+        for (var i = color_val.length - 1; i >= 0; i--) {
+            background1 = background1 + `rgba(${color_val[i].r},${color_val[i].g},${color_val[i].b},${color_val[i].a}) ${color_val[i].offsetX}%,`;
+            background2 = background2 + `rgba(${color_val[i].r},${color_val[i].g},${color_val[i].b},${color_val[i].a}) ${color_val[i].offsetX}%,`;
+
+        }
+        background1 = background1.substring(0, background1.length - 1) + ')';
+        background2 = background2.substring(0, background2.length - 1) + ')';
+        return (
+            <div className="example">
+                <div className="slider"
+                    style={{}}
+                    ref={
+                        el => this.slider = el
+                    }
+                >
+                    <div className="fillColor"
+                        style={{ width: WIDTH_SLIDER, background: background2 }}
+                        onClick={this.onClick}>
+
                     </div>
-                )}
-            </div>
-            <div id='color'>
-                <SketchPicker
-                    color={this.state.background.rgba}
-                    onChangeComplete={this.handleChangeComplete}
-                />
-                <div id='circle-table'>
-                    <table id="list_color">
-                        <tbody>
-                            <tr>
-                                <th>COLOR</th>
-                                <th>HEX</th>
-                                <th>STOP</th>
-                                <th>DELETE</th>
-                            </tr>
-                            {this.table()}
-                        </tbody></table>
-                    <div id='change'>
-                        <Circle
-                            chooseAngle={this.handleAngle}
-                            angle={this.state.angle}
-                        ></Circle>
-                        <Input angle={this.state.angle} editAngle={this.editAngle}></Input>
+                    {Object.entries(this.state.range).map((value, index) =>
+                        <div
+                            name={value[0]}
+                            id={value[0]}
+                            style={{
+                                left: Math.round(this.state.range[value[0]].offsetX * 5),
+                                background: `rgb(${value[1].r},${value[1].g},${value[1].b})`
+                            }}
+                            className={`thumb ${value}`}
+                            // ref={
+                            //     value[0]
+                            // }
+                            onMouseDown={
+                                this.onMouseDown(value[0])
+                            }
+                            onClick={() => this.onClickThumb(value[0], value[1])}
+                        >
+                        </div>
+                    )}
+                </div>
+                <div className='color'>
+                    <SketchPicker
+                        color={this.state.background.rgba}
+                        onChangeComplete={this.handleChangeComplete}
+                    />
+                    <div className='circle-table'>
+                        <table className="list_color">
+                            <tbody>
+                                <tr>
+                                    <th>COLOR</th>
+                                    <th>HEX</th>
+                                    <th>STOP</th>
+                                    <th>DELETE</th>
+                                </tr>
+                                {this.table()}
+                            </tbody></table>
+                        <div className='change'>
+                            <Circle
+                                chooseAngle={this.handleAngle}
+                                angle={this.state.angle}
+                            ></Circle>
+                            <Input angle={this.state.angle} editAngle={this.editAngle}></Input>
+                        </div>
                     </div>
                 </div>
+                <div className='table'
+                    style={{ background: background1 }}
+                ></div>
             </div>
-            <div id='table'
-                style={{ background: background1 }}
-            ></div>
-        </div>
-    );
-}
+        );
+    }
 };
+
+
