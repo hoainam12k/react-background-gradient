@@ -6,7 +6,7 @@
   "private": true,
   "dependencies": {
     "css-loader": "^3.4.2",
-    "prop-types": "^15.6.2",
+    "prop-types": "^15.7.2",
     "react": "^16.4.1",
     "react-bg-gradient": "file:..",
     "react-dom": "^16.4.1",
