@@ -2,21 +2,21 @@ import React from 'react';
 import { SketchPicker } from 'react-color';
 import Circle from './Circle';
 import Input from './Input';
-import "./style.css"
+import style from './style.css';
 const WIDTH_SLIDER = 500;
 export default class Slider extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            range: '',
-            background: { rgba: { r: 164, g: 26, b: 58, a: 1 }, hex: '#A41A3A' },
-            rangeVal: '1',
-            move: false,
-            first: 1,
-            angle: 0,
-        }
-        this.isDragging = false;
-    }
+  constructor(props) {
+    super(props);
+    this.state = {
+      range: '',
+      background: { rgba: { r: 164, g: 26, b: 58, a: 1 }, hex: '#A41A3A' },
+      rangeVal: '1',
+      move: false,
+      first: 1,
+      angle: 0
+    };
+    this.isDragging = false;
+  }
 
     // onMouseMove = (obj, shiftX, value) => {
     //     return event => {
@@ -252,7 +252,7 @@ export default class Slider extends React.Component {
             this.setState({ range: range, rangeVal: rangeVal[0][0], first: rangeVal[0][0] })
         }
     }
-    // hàm sắp xếp object, với đầu vào là filed là trường cần mong muốn sắp xếp, reverse dưới dạng boolean có muốn sắp xếp ngưowjc hay không, trường primer là trường định dạng giá trị của trường field là int hay float.... 
+    // hàm sắp xếp object, với đầu vào là filed là trường cần mong muốn sắp xếp, reverse dưới dạng boolean có muốn sắp xếp ngưowjc hay không, trường primer là trường định dạng giá trị của trường field là int hay float....
     sort_by = (field, reverse, primer) => {
         const key = primer ?
             function (x) {
@@ -331,8 +331,8 @@ export default class Slider extends React.Component {
         background1 = background1.substring(0, background1.length - 1) + ')';
         background2 = background2.substring(0, background2.length - 1) + ')';
         return (
-            <div className="example">
-                <div className="slider"
+            <div className={style.example}>
+                <div className={style.slider}
                     style={{}}
                     ref={
                         el => this.slider = el
