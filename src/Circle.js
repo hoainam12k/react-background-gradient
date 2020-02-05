@@ -1,29 +1,24 @@
 import React from 'react';
-import "./style.css";
+import style from './style.css';
+import PropTypes from 'prop-types';
+
 export default class Circle extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      angle: 0,
+      angle: 0
     }
   }
   componentWillMount() {
     this.handleAngle()
     this.setState({ angle: this.props.angle })
   }
-  // shouldComponentUpdate(nextProps, nextState) {
-  //     let angle = this.state.angle;
-  //     if (angle === nextProps.angle) {
-  //         return true;
-  //     }
-  //     return false;
-  // }
 
   mouseDown = (event) => {
     event.preventDefault();
     const obj = this
-    let circle = document.getElementById('circle');
-    let picker = document.getElementById('picker');
+    let circle = this.circle;
+    let picker = this.picker;
     let rect = circle.getBoundingClientRect();
 
     let center = {
@@ -44,9 +39,7 @@ export default class Circle extends React.Component {
       return angle
     };
 
-
     document.body.style.cursor = 'default'
-
 
     let mousemove = (event) => {
       obj.setState({ angle: rotate(event.clientX, event.clientY) });
@@ -64,23 +57,18 @@ export default class Circle extends React.Component {
     mousemove(event)
     document.addEventListener('mousemove', mousemove)
     document.addEventListener('mouseup', mouseup)
-
   }
 
   componentDidMount() {
-
-    // pickerCircle.addEventListener('mousedown', mousedown)
-    let circle = document.getElementById('circle');
+    let circle = this.circle;
 
     circle.addEventListener('mousedown', function (event) {
-      if (event.target == document.getElementById('picker-circle')) this.mouseDown(event)
-
+      if (event.target === document.getElementsByClassName('picker-circle')) this.mouseDown(event)
     })
   }
   componentDidUpdate() {
-    let picker = document.getElementById('picker');
+    let picker = this.picker
     picker.style['transform'] = `rotate(${this.props.angle - 55}deg)`;
-
   }
 
   handleAngle = () => {
@@ -89,13 +77,18 @@ export default class Circle extends React.Component {
 
   render() {
     return (
-      <div id="circle">
-        <div id="picker">
-          <div className="picker-circle"
-            onMouseDown={this.mouseDown}>
-          </div>
+      <div className={style.circle} ref={ref => { this.circle = ref }}>
+        <div className={style.picker} ref={ref => { this.picker = ref }}>
+          <div className={style.pickerCircle}
+            onMouseDown={this.mouseDown} />
         </div>
       </div>
     )
   }
+}
+
+Circle.propTypes = {
+  angle: PropTypes.string.isRequired,
+  chooseAngle: PropTypes.func.isRequired
+
 }
