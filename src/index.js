@@ -4,6 +4,8 @@ import Circle from './Circle';
 import Input from './Input';
 import style from './style.css';
 import PropTypes from 'prop-types';
+import Button from './Button';
+import ManaualColor from './ManualColor'
 const WIDTH_SLIDER = 500;
 export default class Slider extends React.Component {
   constructor(props) {
@@ -14,7 +16,8 @@ export default class Slider extends React.Component {
       rangeVal: '1',
       move: false,
       first: 1,
-      angle: 0
+      angle: 0,
+      gradient: 'linear'
     };
     this.isDragging = false;
   }
@@ -282,14 +285,52 @@ export default class Slider extends React.Component {
   handleAngle = (angle) => {
     this.setState({ angle: angle })
   }
+  handleGradient = (gradient) => {
+    if (gradient === 'radial') {
+      this.change.style.display = 'none';
+    } else {
+      this.change.style.display = '';
+    }
+    this.setState({gradient: gradient})
+  }
 
+  handleManualColor = (value) => {
+    let {color1, color2, angle} = value;
+    let range = {
+      1: {
+        offsetX: color1.range,
+        r: color1.r,
+        g: color1.g,
+        b: color1.b,
+        a: color1.a,
+        hex: color1.hex
+      },
+      2: {
+        offsetX: color2.range,
+        r: color2.r,
+        g: color2.g,
+        b: color2.b,
+        a: color2.a,
+        hex: color2.hex
+      }
+    }
+
+    let background = { rgba: { r: color1.r, g: color1.g, b: color1.b, a: color1.a }, hex: color1.hex };
+
+    this.setState({range: range, angle: angle, background: background, first: 1, rangeVal: 1});
+  }
   editAngle = (value) => {
     this.setState({ angle: value })
   }
   render() {
-    const { range } = this.state;
+    const { range, gradient } = this.state;
     let val = Object.values(range);
-    let background1 = `-webkit-linear-gradient(${this.state.angle}deg, `;
+    let background1 = '';
+    if (gradient === 'linear') {
+      background1 = `-webkit-linear-gradient(${this.state.angle}deg, `;
+    } else {
+      background1 = `-webkit-radial-gradient(circle, `
+    }
     let background2 = `-webkit-linear-gradient(0deg, `;
     let colorVal = val.sort(this.sortBy('offsetX', true, parseInt));
     for (var i = colorVal.length - 1; i >= 0; i--) {
@@ -342,7 +383,7 @@ export default class Slider extends React.Component {
                 </tr>
                 {this.table()}
               </tbody></table>
-            <div className={style.change}>
+            <div className={style.change} ref={ref => { this.change = ref }}>
               <Circle
                 chooseAngle={this.handleAngle}
                 angle={this.state.angle}
@@ -351,9 +392,17 @@ export default class Slider extends React.Component {
             </div>
           </div>
         </div>
-        <div className={style.table}
-          style={{ background: background1 }}
-        />
+        <div className={style.displayColor}>
+          <div className={style.table}
+            style={{ background: background1 }}
+          />
+          <div>
+            <Button chooseGradient={this.handleGradient} />
+          </div>
+          <div>
+            <ManaualColor chooseManualColor={this.handleManualColor} newGradient={this.state.gradient} angle={this.state.angle} />
+          </div>
+        </div>
       </div>
     );
   }
