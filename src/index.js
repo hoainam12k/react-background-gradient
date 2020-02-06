@@ -1,11 +1,13 @@
 import React from 'react';
 import { SketchPicker } from 'react-color';
+import { mixColor } from './utils';
 import Circle from './Circle';
 import Input from './Input';
 import style from './style.css';
 import PropTypes from 'prop-types';
 import Button from './Button';
-import ManaualColor from './ManualColor'
+import ManaualColor from './ManualColor';
+
 const WIDTH_SLIDER = 500;
 export default class Slider extends React.Component {
   constructor(props) {
@@ -73,24 +75,6 @@ export default class Slider extends React.Component {
     background.hex = color.hex;
     this.setState({ background: background, range: temp });
   };
-
-  mixColor = (color1, color2) => {
-    let ratio = 0.5;
-    let hex = function (x) {
-      x = x.toString(16);
-      return (x.length === 1) ? '0' + x : x;
-    };
-    let r = Math.ceil(parseInt(color1.substring(0, 2), 16) * ratio + parseInt(color2.substring(0, 2), 16) * (1 - ratio));
-    let g = Math.ceil(parseInt(color1.substring(2, 4), 16) * ratio + parseInt(color2.substring(2, 4), 16) * (1 - ratio));
-    let b = Math.ceil(parseInt(color1.substring(4, 6), 16) * ratio + parseInt(color2.substring(4, 6), 16) * (1 - ratio));
-    return {
-      r: r,
-      g: g,
-      b: b,
-      a: 1,
-      hex: '#' + hex(r) + hex(g) + hex(b)
-    }
-  }
 
   // sự kiện click vào slider để thêm thumb mới.
   onClick = (e) => {
@@ -160,7 +144,7 @@ export default class Slider extends React.Component {
               break;
             }
           };
-          let mixColor = this.mixColor(color[idx].hex.substr(1), color[idx + 1].hex.substr(1));
+          const mColor = mixColor(color[idx].hex.substr(1), color[idx + 1].hex.substr(1));
           let range = Object.entries(this.state.range);
           let index = range[range.length - 1][0]
           const key = `${parseInt(index) + 1}`;
@@ -168,14 +152,14 @@ export default class Slider extends React.Component {
           Object.assign(newRange, {
             [key]: {
               offsetX: Number(offset),
-              r: mixColor.r,
-              g: mixColor.g,
-              b: mixColor.b,
-              a: mixColor.a,
-              hex: mixColor.hex
+              r: mColor.r,
+              g: mColor.g,
+              b: mColor.b,
+              a: mColor.a,
+              hex: mColor.hex
             }
           });
-          let background = { rgba: { r: mixColor.r, g: mixColor.g, b: mixColor.b, a: mixColor.a }, hex: mixColor.hex };
+          let background = { rgba: { r: mColor.r, g: mColor.g, b: mColor.b, a: mColor.a }, hex: mColor.hex };
 
           this.setState({
             range: newRange,
