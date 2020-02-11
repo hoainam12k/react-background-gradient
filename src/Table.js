@@ -34,8 +34,8 @@ export default class Table extends React.Component {
   }
 
   componentWillMount() {
-    let range = this.props.rangeChange();
-    let active = this.props.active();
+    let range = this.props.range;
+    let active = this.props.active;
     let hex = [];
     for (let i in range) {
       if (Number(i) === Number(active)) {
@@ -46,49 +46,40 @@ export default class Table extends React.Component {
     for (let i in fillTable) {
       hex.push({hex: fillTable[i].hex, r: fillTable[i].r, g: fillTable[i].g, b: fillTable[i].b, a: fillTable[i].a, offsetX: fillTable[i].offsetX, active: active, key: i});
     }
-    console.log(hex, 'hex')
     this.setState({hex: hex});
   }
 
   componentDidMount() {
-    let active = this.props.active();
+    let active = this.props.active;
     this[active].style.border = '2px solid white'
   }
 
   componentDidUpdate() {
-    let active = this.props.active();
+    let active = this.props.active;
     let lengthRef = document.getElementsByName('hex').length;
     for (let i = 0; i < lengthRef; i++) {
       document.querySelector(`[data='${i}']`).style.border = '';
     }
     this[active].style.border = '2px solid white'
-
-    console.log(this.state.hex, 'didMount')
   }
 
-  componentWillReceiveProps() {
-    // console.log(this.props.change(), 'change')
-    let range = this.props.rangeChange();
-    let active = this.props.active();
-    let {change} = this.state
+  componentWillReceiveProps(nextProps) {
+    let range = nextProps.range;
+    let active = nextProps.active;
     let hex = [];
-    console.log(change, 'change')
-    if (change === true) {
-      for (let i in range) {
-        if (Number(i) === Number(active)) {
-          range[i][active] = Number(active)
-        }
+    for (let i in range) {
+      if (Number(i) === Number(active)) {
+        range[i][active] = Number(active)
       }
-      let fillTable = range
-      for (let j in range) {
-        hex.push({hex: fillTable[j].hex, r: fillTable[j].r, g: fillTable[j].g, b: fillTable[j].b, a: fillTable[j].a, offsetX: fillTable[j].offsetX, active: active, key: j});
-      }
-      this.setState({hex: hex, change: true});
     }
+    let fillTable = range
+    for (let j in range) {
+      hex.push({hex: fillTable[j].hex, r: fillTable[j].r, g: fillTable[j].g, b: fillTable[j].b, a: fillTable[j].a, offsetX: fillTable[j].offsetX, active: active, key: j});
+    }
+    this.setState({hex: hex, change: true});
   }
 
   clickColorTable = (val, active) => {
-    // this.setState({change: false})
     let lengthRef = document.getElementsByName('hex').length;
     this.props.onClickColor(val, active);
 
@@ -98,53 +89,59 @@ export default class Table extends React.Component {
     this[active].style.border = '2px solid white'
   }
 
-  onChangeStop = (hex, key, val) => e => {
-    console.log(e.target.value)
-    const newHex = this.state.hex.reverse();
-    this.props.onChangeStop(val);
-    for (let i in newHex) {
-      if (Number(newHex[i].key) === Number(key)) {
-        newHex[i].offsetX = e.target.value
+  onChangeStop = (hex, key, val) => {
+    return e => {
+      const newHex = this.state.hex.reverse();
+      for (let i in newHex) {
+        if (Number(newHex[i].key) === Number(key)) {
+          newHex[i].offsetX = e.target.value
+        }
       }
+      if (Number(e.target.value) < 100 && Number(e.target.value) > 0) { this.setState({hex: newHex}); }
+      this.props.onChangeStop(val);
     }
-    this.setState({hex: newHex})
   }
 
-  changeColorTable = (hex, key, val) => e => {
-    this.setState({change: false})
-    let value = e.target.value
-    this.props.changeColorTable(val);
-    const newHex = this.state.hex.reverse();
-    for (let i in newHex) {
-      if (Number(newHex[i].key) === Number(key)) {
-        newHex[i].hex = value
+  changeColorTable = (hex, key, val) => {
+    return e => {
+      this.setState({change: false})
+      let value = e.target.value
+      const newHex = this.state.hex.reverse();
+      for (let i in newHex) {
+        if (Number(newHex[i].key) === Number(key)) {
+          newHex[i].hex = value
+        }
       }
+      this.setState({hex: newHex})
+      this.props.changeColorTable(val, value);
     }
-
-    this.setState({hex: newHex})
   }
 
   deleteColor = (key) => {
-    console.log(key);
     this.props.deleteColor(key)
   }
 
   table = () => {
     let {hex} = this.state;
-    console.log(hex, 'table')
     let newHex = Object.values(hex).sort(this.sortBy('offsetX', true, parseInt)).reverse();
     return (
       newHex.map((val, index) => {
         return (
-          <tr>
+          <tr key={index}>
             <td style={{background: val.hex}} data={index} onClick={() => { this.clickColorTable(val, val.key) }} ref={ref => { this[val.key] = ref }} />
             <td >
               <input style={{height: '20px', width: '55px'}} type='text' name='hex' value={val.hex}
                 onChange={this.changeColorTable(val.hex, val.key, val)}
                 onClick={() => { this.clickColorTable(val, val.key) }}
+                defaultChecked={val.hex}
               />
             </td>
-            <td><input style={{height: '20px', width: '55px'}} type='text' value={val.offsetX} onChange={this.onChangeStop(val.hex, val.key, val)} /></td>
+            <td><input
+              style={{height: '20px', width: '55px'}}
+              type='text' value={val.offsetX}
+              onChange={this.onChangeStop(val.hex, val.key, val)}
+              onClick={() => { this.clickColorTable(val, val.key) }}
+            /></td>
             <td><button onClick={() => this.deleteColor(val.key)}>Delete</button></td>
           </tr>
         )
@@ -168,4 +165,13 @@ export default class Table extends React.Component {
       </div>
     )
   }
+}
+
+Table.propTypes = {
+  range: PropTypes.object.isRequired,
+  active: PropTypes.number.isRequired,
+  onClickColor: PropTypes.func,
+  onChangeStop: PropTypes.func,
+  deleteColor: PropTypes.func,
+  changeColorTable: PropTypes.func
 }

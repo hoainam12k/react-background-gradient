@@ -188,13 +188,10 @@ export default class Slider extends React.Component {
       first: value,
       change: false
     })
-
-    // console.log('thum' + this.state.rangeVal, Number(value))
   }
 
   // hàm xóa thumb khỏi slider và màu khỏi bảng màu
   deleteColor = (key) => {
-    console.log(key)
     let {range, first} = this.state;
     let objectRange = Object.entries(range);
     let length = objectRange.length;
@@ -261,7 +258,6 @@ export default class Slider extends React.Component {
 
   componentDidUpdate() {
     let {range, first} = this.state
-    // let lengthRange = Object.keys(range).length;
     for (let i in range) {
       if (Number(i) === Number(first)) {
         this[first].style.border = '0.7px solid white';
@@ -312,14 +308,6 @@ export default class Slider extends React.Component {
     this.setState({ angle: value })
   }
 
-  changeManual = () => {
-    return this.state.change;
-  }
-
-  passActive = () => {
-    return this.state.first;
-  }
-
   onChangeStop = (val) => {
     let {range} = this.state;
     for (let i in range) {
@@ -336,20 +324,33 @@ export default class Slider extends React.Component {
     this.setState({range: range});
   }
 
-  changeColorTable = (val) => {
+  isHexColor = hex => {
+    if (typeof hex === 'string' && hex.length === 6 && !isNaN(Number('0x' + hex))) return true;
+    return false;
+  }
+
+  changeColorTable = (val, color) => {
     let {range, background} = this.state;
-    let hex = (val.hex).replace('#', '');
-    for (let i in range) {
-      if (Number(i) === Number(val.key)) {
-        range[i].hex = val.hex;
-        background.rgba.r = parseInt((hex).slice(0, 2), 16);
-        background.rgba.g = parseInt((hex).slice(2, 4), 16)
-        background.rgba.b = parseInt((hex).slice(4, 6), 16)
-        background.rgba.a = val.a;
-        background.hex = val.hex
+    let hex = (color).replace('#', '');
+    const re = /[0-9A-Fa-f]{6}/g;
+    if (!re.test(hex)) {
+      for (let i in range) {
+        if (Number(i) === Number(val.key)) {
+          range[i].hex = color;
+          range[i].r = parseInt((hex).slice(0, 2), 16);
+          range[i].g = parseInt((hex).slice(2, 4), 16);
+          range[i].b = parseInt((hex).slice(4, 6), 16);
+          background.rgba.r = parseInt((hex).slice(0, 2), 16);
+          background.rgba.g = parseInt((hex).slice(2, 4), 16)
+          background.rgba.b = parseInt((hex).slice(4, 6), 16)
+          background.rgba.a = val.a;
+          background.hex = color;
+        }
       }
+      this.setState({range: range, background: background});
+    } else {
+      this.setState({ range: range, background: background })
     }
-    this.setState({range: range, background: background});
   }
   rangeChange = () => {
     return this.state.range;
@@ -381,8 +382,9 @@ export default class Slider extends React.Component {
           <div className={style.fillColor}
             style={{ width: WIDTH_SLIDER, background: background2 }}
             onClick={this.onClick} />
-          {Object.entries(this.state.range).map((value) =>
+          {Object.entries(this.state.range).map((value, index) =>
             <div
+              key={index}
               data='thumb'
               ref={ref => { this[value[0]] = ref }}
               name={value[0]}
@@ -407,13 +409,12 @@ export default class Slider extends React.Component {
             />
           </div>
           <div className='circle-table'>
-            <Table rangeChange={this.rangeChange}
+            <Table range={this.state.range}
               onClickColor={this.clickColorTable}
               onChangeStop={this.onChangeStop}
-              active={this.passActive}
+              active={this.state.first}
               deleteColor={this.deleteColor}
               changeColorTable={this.changeColorTable}
-              change={this.changeManual}
             />
             <div className={style.change} ref={ref => { this.change = ref }}>
               <Circle
@@ -441,6 +442,6 @@ export default class Slider extends React.Component {
 };
 
 Slider.propTypes = {
-  range: PropTypes.string.isRequired,
-  angle: PropTypes.string.isRequired
+  range: PropTypes,
+  angle: PropTypes
 }

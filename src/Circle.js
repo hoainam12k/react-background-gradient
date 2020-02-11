@@ -88,7 +88,7 @@ export default class Circle extends React.Component {
 }
 
 Circle.propTypes = {
-  angle: PropTypes.string.isRequired,
+  angle: PropTypes.number.isRequired,
   chooseAngle: PropTypes.func.isRequired
 
 }
