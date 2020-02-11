@@ -192,7 +192,7 @@ export default class Slider extends React.Component {
 
   // hàm xóa thumb khỏi slider và màu khỏi bảng màu
   deleteColor = (key) => {
-    let {range, first} = this.state;
+    let { range, first } = this.state;
     let objectRange = Object.entries(range);
     let length = objectRange.length;
     let max = 0;
@@ -206,9 +206,9 @@ export default class Slider extends React.Component {
         }
       }
       if (Number(key) !== Number(first)) {
-        this.setState({range: range})
+        this.setState({ range: range })
       } else {
-        this.setState({range: range, first: active})
+        this.setState({ range: range, first: active })
       }
     }
   }
@@ -235,7 +235,7 @@ export default class Slider extends React.Component {
   clickColorTable = (val, index) => {
     let background = { rgba: { r: val.r, g: val.g, b: val.b, a: val.a }, hex: val.hex };
 
-    this.setState({background: background, first: index});
+    this.setState({ background: background, first: index });
   }
   // hàm hiển thị các giá trị của bảng màu.
   convertColor = (color) => {
@@ -252,12 +252,12 @@ export default class Slider extends React.Component {
   }
 
   componentWillMount() {
-    let {range} = this.props;
+    let { range } = this.props;
     this.setState({ range: range, angle: this.props.angle });
   }
 
   componentDidUpdate() {
-    let {range, first} = this.state
+    let { range, first } = this.state
     for (let i in range) {
       if (Number(i) === Number(first)) {
         this[first].style.border = '0.7px solid white';
@@ -276,11 +276,11 @@ export default class Slider extends React.Component {
     } else {
       this.change.style.display = '';
     }
-    this.setState({gradient: gradient})
+    this.setState({ gradient: gradient })
   }
 
   handleManualColor = (value) => {
-    let {color1, color2, angle} = value;
+    let { color1, color2, angle } = value;
     let range = {
       0: {
         offsetX: color1.range,
@@ -302,26 +302,29 @@ export default class Slider extends React.Component {
 
     let background = { rgba: { r: color1.r, g: color1.g, b: color1.b, a: color1.a }, hex: color1.hex };
     // let newRange = Object.values(range).sort(this.sortBy('offsetX', true, parseInt))
-    this.setState({range: range, angle: angle, background: background, first: 0, rangeVal: 0, change: true});
+    this.setState({ range: range, angle: angle, background: background, first: 0, rangeVal: 0, change: true });
   }
   editAngle = (value) => {
     this.setState({ angle: value })
   }
 
-  onChangeStop = (val) => {
-    let {range} = this.state;
-    for (let i in range) {
-      if (Number(i) === Number(val.key)) {
-        if (Number(val.offsetX) > 100) {
-          range[i].offsetX = 100;
-        } else if (val.offsetX === '') {
-          range[i].offsetX = 0;
-        } else {
-          range[i].offsetX = Number(val.offsetX);
+  onChangeStop = (val, offsetX) => {
+    console.log(offsetX, 'dsds')
+    let { range } = this.state;
+    if (offsetX !== '' || offsetX !== 'underfined') {
+      for (let i in range) {
+        if (Number(i) === Number(val.key)) {
+          if (Number(offsetX) > 100) {
+            range[i].offsetX = 100;
+          } else if (offsetX === '') {
+            range[i].offsetX = 0;
+          } else {
+            range[i].offsetX = Number(offsetX);
+          }
         }
       }
+      this.setState({ range: range });
     }
-    this.setState({range: range});
   }
 
   isHexColor = hex => {
@@ -330,10 +333,10 @@ export default class Slider extends React.Component {
   }
 
   changeColorTable = (val, color) => {
-    let {range, background} = this.state;
+    let { range, background } = this.state;
     let hex = (color).replace('#', '');
     const re = /[0-9A-Fa-f]{6}/g;
-    if (!re.test(hex)) {
+    if (re.test(hex)) {
       for (let i in range) {
         if (Number(i) === Number(val.key)) {
           range[i].hex = color;
@@ -349,7 +352,7 @@ export default class Slider extends React.Component {
         }
       }
       console.log(range)
-      this.setState({range: range, background: background});
+      this.setState({ range: range, background: background });
     } else {
       this.setState({ range: range, background: background })
     }
