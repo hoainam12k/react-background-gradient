@@ -340,6 +340,7 @@ export default class Slider extends React.Component {
           range[i].r = parseInt((hex).slice(0, 2), 16);
           range[i].g = parseInt((hex).slice(2, 4), 16);
           range[i].b = parseInt((hex).slice(4, 6), 16);
+          range[i].a = val.a
           background.rgba.r = parseInt((hex).slice(0, 2), 16);
           background.rgba.g = parseInt((hex).slice(2, 4), 16)
           background.rgba.b = parseInt((hex).slice(4, 6), 16)
@@ -347,6 +348,7 @@ export default class Slider extends React.Component {
           background.hex = color;
         }
       }
+      console.log(range)
       this.setState({range: range, background: background});
     } else {
       this.setState({ range: range, background: background })
@@ -442,6 +444,6 @@ export default class Slider extends React.Component {
 };
 
 Slider.propTypes = {
-  range: PropTypes,
-  angle: PropTypes
+  range: PropTypes.object,
+  angle: PropTypes.number
 }
