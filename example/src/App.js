@@ -7,7 +7,7 @@ export default class App extends Component {
     super();
     this.state = {
       range: {
-        1: {
+        0: {
           offsetX: 15,
           r: 34,
           g: 27,
@@ -15,7 +15,7 @@ export default class App extends Component {
           a: 1,
           hex: '#221B20'
         },
-        2: {
+        1: {
           offsetX: 50,
           r: 134,
           g: 57,

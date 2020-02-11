@@ -7,6 +7,7 @@ import style from './style.css';
 import PropTypes from 'prop-types';
 import Button from './Button';
 import ManaualColor from './ManualColor';
+import Table from './Table';
 
 const WIDTH_SLIDER = 500;
 export default class Slider extends React.Component {
@@ -15,11 +16,14 @@ export default class Slider extends React.Component {
     this.state = {
       range: '',
       background: { rgba: { r: 164, g: 26, b: 58, a: 1 }, hex: '#A41A3A' },
-      rangeVal: '1',
+      rangeVal: 1,
       move: false,
-      first: 1,
+      first: 0,
       angle: 0,
-      gradient: 'linear'
+      gradient: 'linear',
+      hex: [],
+      stop: [],
+      change: false
     };
     this.isDragging = false;
   }
@@ -60,10 +64,10 @@ export default class Slider extends React.Component {
   // hàm xử lý màu của react-color, đồng thời lấy màu hiện tại của bảng màu.
   handleChangeComplete = (color) => {
     let temp = this.state.range;
-    let rangeVal = this.state.rangeVal;
+    let first = this.state.first;
     //
-    temp[this.state.rangeVal] = {
-      offsetX: Number(this.state.range[rangeVal].offsetX),
+    temp[this.state.first] = {
+      offsetX: Number(this.state.range[first].offsetX),
       r: color.rgb.r,
       g: color.rgb.g,
       b: color.rgb.b,
@@ -94,7 +98,7 @@ export default class Slider extends React.Component {
           let range = Object.entries(this.state.range);
           let index = range[range.length - 1][0]
           const key = `${parseInt(index) + 1}`;
-          var newRange = this.state.range;
+          let newRange = this.state.range;
           Object.assign(newRange, {
             [key]: {
               offsetX: Number(offset),
@@ -106,6 +110,7 @@ export default class Slider extends React.Component {
             }
           });
           let background = { rgba: { r: color[0].r, g: color[0].g, b: color[0].b, a: color[0].a }, hex: color[0].hex };
+          // newRange = Object.values(newRange).sort(this.sortBy('offsetX', true, parseInt))
           this.setState({
             range: newRange,
             rangeVal: key,
@@ -130,6 +135,7 @@ export default class Slider extends React.Component {
             }
           });
           let background = { rgba: { r: color[color.length - 1].r, g: color[color.length - 1].g, b: color[color.length - 1].b, a: color[color.length - 1].a }, hex: color[color.length - 1].hex };
+          // newRange = Object.values(newRange).sort(this.sortBy('offsetX', true, parseInt))
           this.setState({
             range: newRange,
             rangeVal: key,
@@ -160,7 +166,7 @@ export default class Slider extends React.Component {
             }
           });
           let background = { rgba: { r: mColor.r, g: mColor.g, b: mColor.b, a: mColor.a }, hex: mColor.hex };
-
+          // newRange = Object.values(newRange).sort(this.sortBy('offsetX', true, parseInt))
           this.setState({
             range: newRange,
             rangeVal: key,
@@ -176,36 +182,37 @@ export default class Slider extends React.Component {
   // hàm lấy thumb hiện tại khi click vào
   onClickThumb = (value, range) => {
     let background = { rgba: { r: range.r, g: range.g, b: range.b, a: range.a }, hex: range.hex };
-    document.getElementById(this.state.first).style.border = '';
-    Object.assign(document.getElementById(value).style, { border: '0.7px solid white' });
     this.setState({
-      rangeVal: value,
+      rangeVal: Number(value),
       background: background,
-      first: Number(value)
+      first: value,
+      change: false
     })
+
+    // console.log('thum' + this.state.rangeVal, Number(value))
   }
 
   // hàm xóa thumb khỏi slider và màu khỏi bảng màu
-  deleteColor = (offsetX) => {
-    let range = this.state.range;
+  deleteColor = (key) => {
+    console.log(key)
+    let {range, first} = this.state;
     let objectRange = Object.entries(range);
     let length = objectRange.length;
-    let index = '';
+    let max = 0;
+    let active = '';
     if (length > 2) {
-      for (var i = 0; i < length; i++) {
-        if (objectRange[i][1].offsetX === Number(offsetX)) {
-          index = objectRange[i][0];
-          break;
+      delete range[key];
+      for (let i in range) {
+        if (Number(range[i].offsetX) > Number(max)) {
+          max = range[i].offsetX;
+          active = i;
         }
       }
-    }
-    if (index !== '') {
-      delete range[index];
-      let offsetMax = Object.values(range).sort(this.sortBy('offsetX', true, parseInt));
-      let rangeVal = objectRange.filter(val => val[1].offsetX === offsetMax[0].offsetX);
-      document.getElementById(this.state.first).style.border = '';
-      document.getElementById(rangeVal[0][0]).style.border = '0px solid white';
-      this.setState({ range: range, rangeVal: rangeVal[0][0], first: rangeVal[0][0] })
+      if (Number(key) !== Number(first)) {
+        this.setState({range: range})
+      } else {
+        this.setState({range: range, first: active})
+      }
     }
   }
   // hàm sắp xếp object, với đầu vào là filed là trường cần mong muốn sắp xếp, reverse dưới dạng boolean có muốn sắp xếp ngưowjc hay không, trường primer là trường định dạng giá trị của trường field là int hay float....
@@ -227,24 +234,13 @@ export default class Slider extends React.Component {
       return reverse * (exp1 - exp2);
     }
   }
-  // hàm hiển thị các giá trị của bảng màu.
-  table = () => {
-    let range = this.state.range
-    let fillTable = Object.values(range).sort(this.sortBy('offsetX', true, parseInt));
-    return (
-      Object.values(fillTable).map((val, index) => {
-        return (
-          <tr>
-            <td style={{ background: val.hex, width: '2px', height: '2px', border: '0.7px solid white' }} />
-            <td>{val.hex}</td>
-            <td>{val.offsetX}</td>
-            <td><button onClick={() => this.deleteColor(val.offsetX)}>Delete</button></td>
-          </tr>
-        )
-      })
-    )
-  }
 
+  clickColorTable = (val, index) => {
+    let background = { rgba: { r: val.r, g: val.g, b: val.b, a: val.a }, hex: val.hex };
+
+    this.setState({background: background, first: index});
+  }
+  // hàm hiển thị các giá trị của bảng màu.
   convertColor = (color) => {
     let hex = Number(color).toString(16);
     if (hex.length < 2) {
@@ -259,11 +255,20 @@ export default class Slider extends React.Component {
   }
 
   componentWillMount() {
-    this.setState({ range: this.props.range, angle: this.props.angle })
+    let {range} = this.props;
+    this.setState({ range: range, angle: this.props.angle });
   }
 
   componentDidUpdate() {
-    document.getElementById(this.state.first).style.border = '0.7px solid white';
+    let {range, first} = this.state
+    // let lengthRange = Object.keys(range).length;
+    for (let i in range) {
+      if (Number(i) === Number(first)) {
+        this[first].style.border = '0.7px solid white';
+      } else {
+        this[i].style.border = ''
+      }
+    }
   }
 
   handleAngle = (angle) => {
@@ -281,7 +286,7 @@ export default class Slider extends React.Component {
   handleManualColor = (value) => {
     let {color1, color2, angle} = value;
     let range = {
-      1: {
+      0: {
         offsetX: color1.range,
         r: color1.r,
         g: color1.g,
@@ -289,7 +294,7 @@ export default class Slider extends React.Component {
         a: color1.a,
         hex: color1.hex
       },
-      2: {
+      1: {
         offsetX: color2.range,
         r: color2.r,
         g: color2.g,
@@ -300,11 +305,54 @@ export default class Slider extends React.Component {
     }
 
     let background = { rgba: { r: color1.r, g: color1.g, b: color1.b, a: color1.a }, hex: color1.hex };
-
-    this.setState({range: range, angle: angle, background: background, first: 1, rangeVal: 1});
+    // let newRange = Object.values(range).sort(this.sortBy('offsetX', true, parseInt))
+    this.setState({range: range, angle: angle, background: background, first: 0, rangeVal: 0, change: true});
   }
   editAngle = (value) => {
     this.setState({ angle: value })
+  }
+
+  changeManual = () => {
+    return this.state.change;
+  }
+
+  passActive = () => {
+    return this.state.first;
+  }
+
+  onChangeStop = (val) => {
+    let {range} = this.state;
+    for (let i in range) {
+      if (Number(i) === Number(val.key)) {
+        if (Number(val.offsetX) > 100) {
+          range[i].offsetX = 100;
+        } else if (val.offsetX === '') {
+          range[i].offsetX = 0;
+        } else {
+          range[i].offsetX = Number(val.offsetX);
+        }
+      }
+    }
+    this.setState({range: range});
+  }
+
+  changeColorTable = (val) => {
+    let {range, background} = this.state;
+    let hex = (val.hex).replace('#', '');
+    for (let i in range) {
+      if (Number(i) === Number(val.key)) {
+        range[i].hex = val.hex;
+        background.rgba.r = parseInt((hex).slice(0, 2), 16);
+        background.rgba.g = parseInt((hex).slice(2, 4), 16)
+        background.rgba.b = parseInt((hex).slice(4, 6), 16)
+        background.rgba.a = val.a;
+        background.hex = val.hex
+      }
+    }
+    this.setState({range: range, background: background});
+  }
+  rangeChange = () => {
+    return this.state.range;
   }
   render() {
     const { range, gradient } = this.state;
@@ -333,8 +381,10 @@ export default class Slider extends React.Component {
           <div className={style.fillColor}
             style={{ width: WIDTH_SLIDER, background: background2 }}
             onClick={this.onClick} />
-          {Object.entries(this.state.range).map((value, index) =>
+          {Object.entries(this.state.range).map((value) =>
             <div
+              data='thumb'
+              ref={ref => { this[value[0]] = ref }}
               name={value[0]}
               id={value[0]}
               style={{
@@ -357,16 +407,14 @@ export default class Slider extends React.Component {
             />
           </div>
           <div className='circle-table'>
-            <table className={style.listColor}>
-              <tbody>
-                <tr>
-                  <th>COLOR</th>
-                  <th>HEX</th>
-                  <th>STOP</th>
-                  <th>DELETE</th>
-                </tr>
-                {this.table()}
-              </tbody></table>
+            <Table rangeChange={this.rangeChange}
+              onClickColor={this.clickColorTable}
+              onChangeStop={this.onChangeStop}
+              active={this.passActive}
+              deleteColor={this.deleteColor}
+              changeColorTable={this.changeColorTable}
+              change={this.changeManual}
+            />
             <div className={style.change} ref={ref => { this.change = ref }}>
               <Circle
                 chooseAngle={this.handleAngle}
