@@ -79,7 +79,6 @@ export default class Table extends React.Component {
       hex.push({ hex: fillTable[j].hex, r: fillTable[j].r, g: fillTable[j].g, b: fillTable[j].b, a: fillTable[j].a, offsetX: fillTable[j].offsetX, active: active, key: j });
     };
     let newHex = Object.values(hex).sort(this.sortBy('offsetX', true, parseInt)).reverse();
-    console.log(hex);
     let arrayHex = newHex.map((val, index) => {
       return val.hex
     })
@@ -123,7 +122,6 @@ export default class Table extends React.Component {
   onKeyPress = (val) => {
     return e => {
       if (e.key === 'Enter') {
-        console.log(123)
         this.props.onChangeStop(val, e.target.value);
       }
     }
@@ -132,7 +130,6 @@ export default class Table extends React.Component {
   onKeyPressHex = (val) => {
     return e => {
       if (e.key === 'Enter') {
-        console.log(123)
         this.props.changeColorTable(val, e.target.value);
       }
     }

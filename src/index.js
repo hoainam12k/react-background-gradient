@@ -309,7 +309,6 @@ export default class Slider extends React.Component {
   }
 
   onChangeStop = (val, offsetX) => {
-    console.log(offsetX, 'dsds')
     let { range } = this.state;
     if (offsetX !== '' || offsetX !== 'underfined') {
       for (let i in range) {
@@ -351,7 +350,6 @@ export default class Slider extends React.Component {
           background.hex = color;
         }
       }
-      console.log(range)
       this.setState({ range: range, background: background });
     } else {
       this.setState({ range: range, background: background })
