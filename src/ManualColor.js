@@ -7,8 +7,7 @@ export default class ManualColor extends React.Component {
   constructor() {
     super();
     this.state = {
-      gradient: 'linear',
-      btn: ''
+      gradient: 'linear'
     }
   }
 
@@ -20,7 +19,7 @@ export default class ManualColor extends React.Component {
         Object.assign(document.getElementsByName('manualColor')[i].style, { border: '' });
       }
     }
-    Object.assign(document.getElementById(val + index).style, { border: '2px solid #1F2667' });
+    Object.assign(this[`${index}`].style, { border: '2px solid #1F2667' });
   }
 
   shouldComponentUpdate() {
@@ -54,7 +53,7 @@ export default class ManualColor extends React.Component {
     return (
       Object.values(Palettle).map((val, index) => {
         return (
-          <div name='manualColor' className={style.manualColor} id={val + index} style={{background: arrayGradient[index]}} onClick={() => this.onClick(val, index)} />
+          <div key={index} name='manualColor' className={style.manualColor} ref={ref => { this[`${index}`] = ref }} style={{background: arrayGradient[index]}} onClick={() => this.onClick(val, index)} />
         )
       })
     )

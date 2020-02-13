@@ -6,8 +6,8 @@ export default class App extends Component {
   constructor() {
     super();
     this.state = {
-      range: {
-        0: {
+      range: [
+         {
           offsetX: 15,
           r: 34,
           g: 27,
@@ -15,15 +15,15 @@ export default class App extends Component {
           a: 1,
           hex: '#221B20'
         },
-        1: {
+         {
           offsetX: 50,
           r: 134,
           g: 57,
           b: 62,
           a: 1,
           hex: '#86393E'
-        },
-      },
+        }
+      ],
       angle: 0
     }
   }
