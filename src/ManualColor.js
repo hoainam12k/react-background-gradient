@@ -29,7 +29,7 @@ export default class ManualColor extends React.Component {
     } else { return true }
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     let {newGradient} = nextProps;
     this.setState({gradient: newGradient})
   }

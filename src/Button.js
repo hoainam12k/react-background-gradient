@@ -30,5 +30,5 @@ export default class Button extends React.Component {
 }
 
 Button.propTypes = {
-  chooseGradient: PropTypes.func.isRequired
+  chooseGradient: PropTypes.func
 }

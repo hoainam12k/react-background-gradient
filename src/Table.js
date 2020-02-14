@@ -36,7 +36,7 @@ export default class Table extends React.Component {
     }
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     let {range, active} = this.props;
     let hex = [];
     for (let i in range) {
@@ -80,7 +80,7 @@ export default class Table extends React.Component {
     }
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     let range = nextProps.range;
     const active = nextProps.active;
     let hex = [];

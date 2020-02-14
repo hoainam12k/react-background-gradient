@@ -249,7 +249,7 @@ export default class Slider extends React.Component {
     return hex
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     const { range } = this.props;
     let background = { rgba: { r: range[0].r, g: range[0].g, b: range[0].b, a: range[0].a }, hex: range[0].hex };
     this.setState({ range: range, angle: this.props.angle, background: background });

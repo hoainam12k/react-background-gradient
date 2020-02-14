@@ -12,7 +12,7 @@ export default class Input extends React.Component {
   componentDidMount() {
     this.setState({ inputValue: this.props.angle })
   }
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     this.setState({ inputValue: nextProps.angle })
   }
   onChange = (e) => {

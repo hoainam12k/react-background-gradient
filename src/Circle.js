@@ -10,7 +10,7 @@ export default class Circle extends React.Component {
     }
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     this.handleAngle()
     this.setState({ angle: this.props.angle })
   }
