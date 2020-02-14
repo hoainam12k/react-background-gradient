@@ -14,6 +14,7 @@ export default class App extends Component {
           g: 27,
           b: 32,
           a: 1,
+          hex: '#221B20'
         },
          {
           offsetX: 50,
@@ -21,12 +22,12 @@ export default class App extends Component {
           g: 57,
           b: 62,
           a: 1,
+          hex: '#86393E'
         }
       ],
       angle: 0,
       palettle: Palettle
     }
-   
   }
 
   onChange = () => {
