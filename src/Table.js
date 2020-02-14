@@ -70,7 +70,6 @@ export default class Table extends React.Component {
     //   }
     //   this[`offset${active}`].focus();
     // }
-    console.log(check, '123')
     if (check === true) {
       for (let i in hex) {
         this[`tr${hex[i].key}`].style.border = '';

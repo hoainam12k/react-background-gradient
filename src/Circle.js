@@ -74,12 +74,9 @@ export default class Circle extends React.Component {
   render() {
     return (
       <div className={style.circle} ref={ref => { this.circle = ref }}>
-        <div className={style.picker}
-          ref={ref => { this.picker = ref }}
-          onMouseDown={this.mouseDown}
-        >
+        <div className={style.picker} ref={ref => { this.picker = ref }}>
           <div className={style.pickerCircle}
-          />
+            onMouseDown={this.mouseDown} />
         </div>
       </div>
     )

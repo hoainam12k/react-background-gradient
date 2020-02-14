@@ -16,7 +16,6 @@ export default class Button extends React.Component {
 
     componentDidUpdate() {
       const {val} = this.state;
-      console.log(val, this[`${val}`]);
       this[`${val}`].checked = true;
     }
 
