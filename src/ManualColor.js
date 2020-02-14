@@ -29,6 +29,7 @@ export default class ManualColor extends React.Component {
     } else { return true }
   }
 
+  // eslint-disable-next-line camelcase
   UNSAFE_componentWillReceiveProps(nextProps) {
     let {newGradient} = nextProps;
     this.setState({gradient: newGradient})
@@ -71,5 +72,5 @@ export default class ManualColor extends React.Component {
 ManualColor.propTypes = {
   chooseManualColor: PropTypes.func.isRequired,
   newGradient: PropTypes.string.isRequired,
-  palettle: PropTypes.array,
+  palettle: PropTypes.array
 }

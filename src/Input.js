@@ -12,6 +12,7 @@ export default class Input extends React.Component {
   componentDidMount() {
     this.setState({ inputValue: this.props.angle })
   }
+  // eslint-disable-next-line camelcase
   UNSAFE_componentWillReceiveProps(nextProps) {
     this.setState({ inputValue: nextProps.angle })
   }

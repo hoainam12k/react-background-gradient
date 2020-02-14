@@ -10,6 +10,7 @@ export default class Circle extends React.Component {
     }
   }
 
+  // eslint-disable-next-line camelcase
   UNSAFE_componentWillMount() {
     this.handleAngle()
     this.setState({ angle: this.props.angle })

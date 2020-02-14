@@ -58,6 +58,11 @@ export default class Slider extends React.Component {
     }
   }
 
+  rgbToHex = (r, g, b) => {
+    let hex = '#' + this.convertColor(r) + this.convertColor(g) + this.convertColor(b);
+    return hex
+  }
+
   // hàm xử lý màu của react-color, đồng thời lấy màu hiện tại của bảng màu.
   handleChangeComplete = (color) => {
     let temp = this.state.range;
@@ -244,15 +249,12 @@ export default class Slider extends React.Component {
     return hex;
   }
 
-  rgbToHex = (r, g, b) => {
-    let hex = '#' + this.convertColor(r) + this.convertColor(g) + this.convertColor(b);
-    return hex
-  }
-
+  // eslint-disable-next-line camelcase
   UNSAFE_componentWillMount() {
-    const { range } = this.props;
-    let background = { rgba: { r: range[0].r, g: range[0].g, b: range[0].b, a: range[0].a }, hex: range[0].hex };
-    this.setState({ range: range, angle: this.props.angle, background: background });
+    let { range, angle } = this.props.onChange();
+    let hex = this.rgbToHex(range[0].r, range[0].g, range[0].b)
+    let background = { rgba: { r: range[0].r, g: range[0].g, b: range[0].b, a: range[0].a }, hex: hex };
+    this.setState({ range: range, angle: angle, background: background });
   }
 
   componentDidUpdate() {
@@ -363,7 +365,7 @@ export default class Slider extends React.Component {
 
   render() {
     const { range, gradient } = this.state;
-    const {palettle} = this.props
+    const {palettle} = this.props.onChange()
     let val = Object.values(range);
     let background1 = '';
     if (gradient === 'linear') {
@@ -449,7 +451,5 @@ export default class Slider extends React.Component {
 };
 
 Slider.propTypes = {
-  range: PropTypes.array,
-  angle: PropTypes.number,
-  palettle: PropTypes.array
+  onChange: PropTypes.func
 }

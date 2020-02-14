@@ -36,6 +36,7 @@ export default class Table extends React.Component {
     }
   }
 
+  // eslint-disable-next-line camelcase
   UNSAFE_componentWillMount() {
     let {range, active} = this.props;
     let hex = [];
@@ -64,24 +65,33 @@ export default class Table extends React.Component {
       document.querySelector(`[data='${i}']`).style.border = '';
     }
     this[active].style.border = '2px solid white';
-    // if (check === true) {
-    //   for (let i in hex) {
-    //     this[`offset${hex[i].key}`].blur();
-    //   }
-    //   this[`offset${active}`].focus();
-    // }
     if (check === true) {
       for (let i in hex) {
         this[`tr${hex[i].key}`].style.border = '';
-        // this[`offset${hex[i].key}`].blur();
       }
       this[`tr${active}`].style.border = '2px solid green';
-      // this[`offset${active}`].focus();
     }
   }
 
+  convertColor = (color) => {
+    let hex = Number(color).toString(16);
+    if (hex.length < 2) {
+      hex = '0' + hex
+    }
+    return hex;
+  }
+
+  rgbToHex = (r, g, b) => {
+    let hex = '#' + this.convertColor(r) + this.convertColor(g) + this.convertColor(b);
+    return hex
+  }
+
+  // eslint-disable-next-line camelcase
   UNSAFE_componentWillReceiveProps(nextProps) {
     let range = nextProps.range;
+    for (let i in range) {
+      range[i].hex = this.rgbToHex(range[i].r, range[i].g, range[i].b, range[i].a1)
+    }
     const active = nextProps.active;
     let hex = [];
     for (let i in range) {
@@ -135,39 +145,20 @@ export default class Table extends React.Component {
     this.props.deleteColor(key)
   }
 
-  // onKeyPress = (val) => {
-  //   return e => {
-  //     if (e.key === 'Enter') {
-  //       this.props.onChangeStop(val, e.target.value);
-  //       this.setState({check: true});
-  //     }
-  //   }
-  // }
   onBlurHex = (val) => {
     return e => {
-      // if (e.currentTarget.contains(e.relatedTarget)) {
       this.props.changeColorTable(val, e.target.value);
       this.setState({check: true});
-      // }
     }
   }
 
   onBlurOffset = (val) => {
     return e => {
-      // if (e.currentTarget.contains(e.relatedTarget)) {
       this.props.onChangeStop(val, e.target.value);
       this.setState({check: true});
-      // }
     }
   }
 
-  // onKeyPressHex = (val) => {
-  //   return e => {
-  //     if (e.key === 'Enter') {
-  //       this.props.changeColorTable(val, e.target.value);
-  //     }
-  //   }
-  // }
   table = () => {
     const { hex, arrayHex, arrayOffsetX } = this.state;
     const newHex = Object.values(hex).sort(this.sortBy('offsetX', true, parseInt)).reverse();
@@ -184,7 +175,6 @@ export default class Table extends React.Component {
               <input style={{ height: '20px', width: '55px' }} type='text' name='hex' value={arrayHex[index]}
                 onChange={this.changeColorTable(index)}
                 onClick={() => { this.clickColorTable(val, val.key) }}
-                // onKeyPress={this.onKeyPressHex(val)}
                 defaultChecked={val.hex}
                 ref={ref => { this[`hex${val.key}`] = ref }}
                 onBlur={this.onBlurHex(val)}
@@ -195,7 +185,6 @@ export default class Table extends React.Component {
               style={{ height: '20px', width: '55px' }}
               type='text' value={arrayOffsetX[index]}
               onChange={this.onChangeStop(index)}
-              // onKeyPress={this.onKeyPress(val)}
               onClick={() => { this.clickColorTable(val, val.key) }}
               onBlur={this.onBlurOffset(val)}
               ref={ref => { this[`offset${val.key}`] = ref }}
