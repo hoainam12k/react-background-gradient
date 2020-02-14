@@ -64,11 +64,20 @@ export default class Table extends React.Component {
       document.querySelector(`[data='${i}']`).style.border = '';
     }
     this[active].style.border = '2px solid white';
+    // if (check === true) {
+    //   for (let i in hex) {
+    //     this[`offset${hex[i].key}`].blur();
+    //   }
+    //   this[`offset${active}`].focus();
+    // }
+    console.log(check, '123')
     if (check === true) {
       for (let i in hex) {
-        this[`offset${hex[i].key}`].blur();
+        this[`tr${hex[i].key}`].style.border = '';
+        // this[`offset${hex[i].key}`].blur();
       }
-      this[`offset${active}`].focus();
+      this[`tr${active}`].style.border = '2px solid green';
+      // this[`offset${active}`].focus();
     }
   }
 
@@ -97,7 +106,7 @@ export default class Table extends React.Component {
   }
 
   clickColorTable = (val, active) => {
-    this.setState({check: false})
+    this.setState({check: true})
     const lengthRef = document.getElementsByName('hex').length;
     this.props.onClickColor(val, active);
 
@@ -127,29 +136,46 @@ export default class Table extends React.Component {
     this.props.deleteColor(key)
   }
 
-  onKeyPress = (val) => {
+  // onKeyPress = (val) => {
+  //   return e => {
+  //     if (e.key === 'Enter') {
+  //       this.props.onChangeStop(val, e.target.value);
+  //       this.setState({check: true});
+  //     }
+  //   }
+  // }
+  onBlurHex = (val) => {
     return e => {
-      if (e.key === 'Enter') {
-        this.props.onChangeStop(val, e.target.value);
-        this.setState({check: true});
-      }
+      // if (e.currentTarget.contains(e.relatedTarget)) {
+      this.props.changeColorTable(val, e.target.value);
+      this.setState({check: true});
+      // }
     }
   }
 
-  onKeyPressHex = (val) => {
+  onBlurOffset = (val) => {
     return e => {
-      if (e.key === 'Enter') {
-        this.props.changeColorTable(val, e.target.value);
-      }
+      // if (e.currentTarget.contains(e.relatedTarget)) {
+      this.props.onChangeStop(val, e.target.value);
+      this.setState({check: true});
+      // }
     }
   }
+
+  // onKeyPressHex = (val) => {
+  //   return e => {
+  //     if (e.key === 'Enter') {
+  //       this.props.changeColorTable(val, e.target.value);
+  //     }
+  //   }
+  // }
   table = () => {
     const { hex, arrayHex, arrayOffsetX } = this.state;
     const newHex = Object.values(hex).sort(this.sortBy('offsetX', true, parseInt)).reverse();
     return (
       newHex.map((val, index) => {
         return (
-          <tr key={index}>
+          <tr key={index} ref={ref => { this[`tr${val.key}`] = ref }} >
             <td
               style={{ background: val.hex }}
               data={index}
@@ -159,17 +185,20 @@ export default class Table extends React.Component {
               <input style={{ height: '20px', width: '55px' }} type='text' name='hex' value={arrayHex[index]}
                 onChange={this.changeColorTable(index)}
                 onClick={() => { this.clickColorTable(val, val.key) }}
-                onKeyPress={this.onKeyPressHex(val)}
+                // onKeyPress={this.onKeyPressHex(val)}
                 defaultChecked={val.hex}
                 ref={ref => { this[`hex${val.key}`] = ref }}
+                onBlur={this.onBlurHex(val)}
+
               />
             </td>
             <td><input
               style={{ height: '20px', width: '55px' }}
               type='text' value={arrayOffsetX[index]}
               onChange={this.onChangeStop(index)}
-              onKeyPress={this.onKeyPress(val)}
+              // onKeyPress={this.onKeyPress(val)}
               onClick={() => { this.clickColorTable(val, val.key) }}
+              onBlur={this.onBlurOffset(val)}
               ref={ref => { this[`offset${val.key}`] = ref }}
             />
             </td>
@@ -199,7 +228,7 @@ export default class Table extends React.Component {
 }
 
 Table.propTypes = {
-  range: PropTypes.object.isRequired,
+  range: PropTypes.array.isRequired,
   active: PropTypes.number.isRequired,
   onClickColor: PropTypes.func,
   onChangeStop: PropTypes.func,

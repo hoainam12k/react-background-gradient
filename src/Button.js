@@ -3,20 +3,28 @@ import style from './style.css';
 import PropTypes from 'prop-types';
 
 export default class Button extends React.Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props)
     this.state = {
-      gradient: 'linear'
+      val: 'linear'
     }
   }
     onClick = (event) => {
-      this.props.chooseGradient(event.target.name)
+      this.setState({val: event.target.value})
+      this.props.chooseGradient(event.target.value)
     }
+
+    componentDidUpdate() {
+      const {val} = this.state;
+      console.log(val, this[`${val}`]);
+      this[`${val}`].checked = true;
+    }
+
     render() {
       return (
-        <div className={style.button}>
-          <button className={style.option_button} name='linear' onClick={this.onClick} >Linear</button>
-          <button className={style.option_button} name='radial' onClick={this.onClick}>Radial</button>
+        <div className={style.button} >
+          <input type='radio' value='linear' onClick={this.onClick} ref={ref => { this['linear'] = ref }} name='radio' /> Linear
+          <input type='radio' value='radial' onClick={this.onClick} ref={ref => { this['radial'] = ref }} name='radio' /> Radial
         </div>
       )
     }

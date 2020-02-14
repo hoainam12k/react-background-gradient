@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Palettle } from './colorPalettle';
 import style from './style.css';
 
 export default class ManualColor extends React.Component {
@@ -38,6 +37,8 @@ export default class ManualColor extends React.Component {
   table = () => {
     let arrayGradient = [];
     let {gradient} = this.state;
+    const {palettle} = this.props
+    const Palettle = palettle;
     if (gradient === 'linear') {
       for (let i in Palettle) {
         let backGround = `linear-gradient(${Palettle[i].angle}deg, rgba(${Palettle[i].color1.r},${Palettle[i].color1.g},${Palettle[i].color1.b},1) ${Palettle[i].color1.range}%, rgba(${Palettle[i].color2.r},${Palettle[i].color2.g},${Palettle[i].color2.b},1) ${Palettle[i].color2.range}%)`
@@ -49,7 +50,6 @@ export default class ManualColor extends React.Component {
         arrayGradient.push(backGround)
       };
     }
-
     return (
       Object.values(Palettle).map((val, index) => {
         return (
@@ -70,5 +70,6 @@ export default class ManualColor extends React.Component {
 
 ManualColor.propTypes = {
   chooseManualColor: PropTypes.func.isRequired,
-  newGradient: PropTypes.string.isRequired
+  newGradient: PropTypes.string.isRequired,
+  palettle: PropTypes.array,
 }

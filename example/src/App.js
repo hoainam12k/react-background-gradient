@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 
 import ExampleComponent from 'react-bg-gradient'
+import { Palettle } from './colorPalettle';
 
 export default class App extends Component {
   constructor() {
@@ -31,7 +32,7 @@ export default class App extends Component {
   render() {
     return (
       <div>
-        <ExampleComponent range={this.state.range} angle={this.state.angle} />
+        <ExampleComponent range={this.state.range} angle={this.state.angle} palettle={Palettle} />
       </div>
     )
   }

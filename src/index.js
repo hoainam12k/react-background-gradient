@@ -15,7 +15,7 @@ export default class Slider extends React.Component {
     super(props);
     this.state = {
       range: 0,
-      background: { rgba: { r: 164, g: 26, b: 58, a: 1 }, hex: '#A41A3A' },
+      background: { rgba: { r: '', g: '', b: '', a: '' }, hex: '' },
       rangeVal: 1,
       move: false,
       first: 0,
@@ -51,7 +51,7 @@ export default class Slider extends React.Component {
         this.isDragging = true;
       }
 
-      function onMouseUp(e) {
+      function onMouseUp() {
         document.removeEventListener('mouseup', onMouseUp);
         document.removeEventListener('mousemove', onMouseMove);
       }
@@ -70,11 +70,14 @@ export default class Slider extends React.Component {
       a: color.rgb.a,
       hex: color.hex
     }
-    let background = this.state.background;
-    background.rgba = color.rgb;
-    background.hex = color.hex;
+    let {background} = this.state;
     this.setState({ background: background, range: temp });
   };
+
+  handleChange = (color) => {
+    let background = {rgba: {r: color.rgb, hex: color.hex}};
+    this.setState({background: background})
+  }
 
   // sự kiện click vào slider để thêm thumb mới.
   onClick = (e) => {
@@ -133,7 +136,7 @@ export default class Slider extends React.Component {
           this.setState({
             range: newRange,
             rangeVal: key,
-            first: key,
+            first: Number(key),
             background: background
           })
           this[`${this.state.first}`].style.border = '';
@@ -163,7 +166,7 @@ export default class Slider extends React.Component {
           this.setState({
             range: newRange,
             rangeVal: key,
-            first: key,
+            first: Number(key),
             background: background
           })
           this[`${this.state.first}`].style.border = '';
@@ -178,7 +181,7 @@ export default class Slider extends React.Component {
     this.setState({
       rangeVal: Number(value),
       background: background,
-      first: value,
+      first: Number(value),
       change: false
     })
   }
@@ -201,7 +204,7 @@ export default class Slider extends React.Component {
       if (Number(key) !== Number(first)) {
         this.setState({ range: range })
       } else {
-        this.setState({ range: range, first: active })
+        this.setState({ range: range, first: Number(active) })
       }
     }
   }
@@ -228,7 +231,7 @@ export default class Slider extends React.Component {
   clickColorTable = (val, index) => {
     let background = { rgba: { r: val.r, g: val.g, b: val.b, a: val.a }, hex: val.hex };
 
-    this.setState({ background: background, first: index });
+    this.setState({ background: background, first: Number(index) });
   }
   // hàm hiển thị các giá trị của bảng màu.
   convertColor = (color) => {
@@ -245,8 +248,9 @@ export default class Slider extends React.Component {
   }
 
   componentWillMount() {
-    let { range } = this.props;
-    this.setState({ range: range, angle: this.props.angle });
+    const { range } = this.props;
+    let background = { rgba: { r: range[0].r, g: range[0].g, b: range[0].b, a: range[0].a }, hex: range[0].hex };
+    this.setState({ range: range, angle: this.props.angle, background: background });
   }
 
   componentDidUpdate() {
@@ -302,18 +306,22 @@ export default class Slider extends React.Component {
 
   onChangeStop = (val, offsetX) => {
     let { range } = this.state;
-    if (offsetX !== '' || offsetX !== 'underfined') {
-      for (let i in range) {
-        if (Number(i) === Number(val.key)) {
-          if (Number(offsetX) > 100) {
-            range[i].offsetX = 100;
-          } else if (offsetX === '') {
-            range[i].offsetX = 0;
-          } else {
-            range[i].offsetX = Number(offsetX);
+    if (!isNaN(offsetX)) {
+      if (offsetX !== '' || offsetX !== 'underfined') {
+        for (let i in range) {
+          if (Number(i) === Number(val.key)) {
+            if (Number(offsetX) > 100) {
+              range[i].offsetX = 100;
+            } else if (offsetX === '') {
+              range[i].offsetX = 0;
+            } else {
+              range[i].offsetX = Number(offsetX);
+            }
           }
         }
+        this.setState({ range: range });
       }
+    } else {
       this.setState({ range: range });
     }
   }
@@ -350,8 +358,10 @@ export default class Slider extends React.Component {
   rangeChange = () => {
     return this.state.range;
   }
+
   render() {
     const { range, gradient } = this.state;
+    const {palettle} = this.props
     let val = Object.values(range);
     let background1 = '';
     if (gradient === 'linear') {
@@ -399,6 +409,7 @@ export default class Slider extends React.Component {
           <div>
             <SketchPicker
               color={this.state.background.rgba}
+              onChange={this.handleChange}
               onChangeComplete={this.handleChangeComplete}
             />
           </div>
@@ -406,7 +417,7 @@ export default class Slider extends React.Component {
             <Table range={this.state.range}
               onClickColor={this.clickColorTable}
               onChangeStop={this.onChangeStop}
-              active={this.state.first}
+              active={Number(this.state.first)}
               deleteColor={this.deleteColor}
               changeColorTable={this.changeColorTable}
             />
@@ -427,7 +438,7 @@ export default class Slider extends React.Component {
             <Button chooseGradient={this.handleGradient} />
           </div>
           <div>
-            <ManaualColor chooseManualColor={this.handleManualColor} newGradient={this.state.gradient} angle={this.state.angle} />
+            <ManaualColor palettle={palettle} chooseManualColor={this.handleManualColor} newGradient={this.state.gradient} angle={this.state.angle} />
           </div>
         </div>
       </div>
@@ -436,6 +447,7 @@ export default class Slider extends React.Component {
 };
 
 Slider.propTypes = {
-  range: PropTypes.object,
-  angle: PropTypes.number
+  range: PropTypes.array,
+  angle: PropTypes.number,
+  palettle: PropTypes.array
 }
