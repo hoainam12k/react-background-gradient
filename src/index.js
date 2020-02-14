@@ -71,11 +71,14 @@ export default class Slider extends React.Component {
       hex: color.hex
     }
     let {background} = this.state;
+    background = {rgba: {r: color.rgb.r, g: color.rgb.g, b: color.rgb.b, a: color.rgb.a}, hex: color.rgb.hex};
+
     this.setState({ background: background, range: temp });
   };
 
   handleChange = (color) => {
-    let background = {rgba: {r: color.rgb, hex: color.hex}};
+    console.log(color)
+    let background = {rgba: {r: color.rgb.r, g: color.rgb.g, b: color.rgb.b, a: color.rgb.a}, hex: color.rgb.hex};
     this.setState({background: background})
   }
 
