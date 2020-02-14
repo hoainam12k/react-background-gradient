@@ -22,8 +22,8 @@ export default class Button extends React.Component {
     render() {
       return (
         <div className={style.button} >
-          <input type='radio' value='linear' onClick={this.onClick} ref={ref => { this['linear'] = ref }} name='radio' /> Linear
-          <input type='radio' value='radial' onClick={this.onClick} ref={ref => { this['radial'] = ref }} name='radio' /> Radial
+          <label><input type='radio' value='linear' onClick={this.onClick} ref={ref => { this['linear'] = ref }} name='radio' /> Linear</label>
+          <label><input type='radio' value='radial' onClick={this.onClick} ref={ref => { this['radial'] = ref }} name='radio' /> Radial</label>
         </div>
       )
     }
