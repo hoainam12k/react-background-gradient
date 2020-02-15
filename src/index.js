@@ -82,7 +82,8 @@ export default class Slider extends React.Component {
   };
 
   handleChange = (color) => {
-    let background = {rgba: {r: color.rgb.r, g: color.rgb.g, b: color.rgb.b, a: color.rgb.a}, hex: color.rgb.hex};
+    let background = {rgba: {r: color.rgb.r, g: color.rgb.g, b: color.rgb.b, a: color.rgb.a}, hex: color.hex};
+    this.props.onChange(background);
     this.setState({background: background})
   }
 
@@ -251,9 +252,10 @@ export default class Slider extends React.Component {
 
   // eslint-disable-next-line camelcase
   UNSAFE_componentWillMount() {
-    let { range, angle } = this.props.onChange();
+    let { range, angle } = this.props.gradient;
     let hex = this.rgbToHex(range[0].r, range[0].g, range[0].b)
     let background = { rgba: { r: range[0].r, g: range[0].g, b: range[0].b, a: range[0].a }, hex: hex };
+    this.props.onChange(background)
     this.setState({ range: range, angle: angle, background: background });
   }
 
@@ -365,7 +367,7 @@ export default class Slider extends React.Component {
 
   render() {
     const { range, gradient } = this.state;
-    const {palettle} = this.props.onChange()
+    const {palettle} = this.props.gradient;
     let val = Object.values(range);
     let background1 = '';
     if (gradient === 'linear') {
@@ -451,5 +453,9 @@ export default class Slider extends React.Component {
 };
 
 Slider.propTypes = {
+  range: PropTypes.object,
+  angle: PropTypes.number,
+  gradient: PropTypes.object,
   onChange: PropTypes.func
+
 }
