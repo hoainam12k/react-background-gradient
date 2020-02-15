@@ -172,7 +172,7 @@ export default class Table extends React.Component {
               onClick={() => { this.clickColorTable(val, val.key) }}
               ref={ref => { this[val.key] = ref }} />
             <td >
-              <input style={{ height: '20px', width: '55px' }} type='text' name='hex' value={arrayHex[index]}
+              <input style={{ height: '20px', width: '55px' }} type='text' name='hex' value={arrayHex[index] || ''}
                 onChange={this.changeColorTable(index)}
                 onClick={() => { this.clickColorTable(val, val.key) }}
                 defaultChecked={val.hex}
@@ -183,7 +183,7 @@ export default class Table extends React.Component {
             </td>
             <td><input
               style={{ height: '20px', width: '55px' }}
-              type='text' value={arrayOffsetX[index]}
+              type='text' value={arrayOffsetX[index] || ''}
               onChange={this.onChangeStop(index)}
               onClick={() => { this.clickColorTable(val, val.key) }}
               onBlur={this.onBlurOffset(val)}
