@@ -398,7 +398,7 @@ export default class Slider extends React.Component {
               key={index}
               data='thumb'
               ref={ref => { this[value[0]] = ref }}
-              name={value[0]}
+              name={value[0] || ''}
               style={{
                 left: Math.round(this.state.range[value[0]].offsetX * 5),
                 background: `rgb(${value[1].r},${value[1].g},${value[1].b})`
