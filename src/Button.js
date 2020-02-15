@@ -6,8 +6,18 @@ export default class Button extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      val: 'linear'
+      val: 's'
     }
+  }
+
+  // eslint-disable-next-line camelcase
+  UNSAFE_componentWillMount() {
+    this.setState({val: this.props.type})
+  }
+  componentDidMount() {
+    const {type} = this.props
+    this.props.chooseGradient(type)
+    this[`${type}`].checked = true;
   }
     onClick = (event) => {
       this.setState({val: event.target.value})
@@ -15,7 +25,7 @@ export default class Button extends React.Component {
     }
 
     componentDidUpdate() {
-      const {val} = this.state;
+      let {val} = this.state;
       this[`${val}`].checked = true;
     }
 

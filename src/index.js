@@ -83,7 +83,7 @@ export default class Slider extends React.Component {
 
   handleChange = (color) => {
     let background = {rgba: {r: color.rgb.r, g: color.rgb.g, b: color.rgb.b, a: color.rgb.a}, hex: color.hex};
-    this.props.onChange(background);
+    this.props.onChange(this.props.gradient);
     this.setState({background: background})
   }
 
@@ -252,11 +252,37 @@ export default class Slider extends React.Component {
 
   // eslint-disable-next-line camelcase
   UNSAFE_componentWillMount() {
-    let { range, angle } = this.props.gradient;
-    let hex = this.rgbToHex(range[0].r, range[0].g, range[0].b)
-    let background = { rgba: { r: range[0].r, g: range[0].g, b: range[0].b, a: range[0].a }, hex: hex };
-    this.props.onChange(background)
-    this.setState({ range: range, angle: angle, background: background });
+    this.props.onChange(this.props.gradient);
+    let { range, angle, type, palettle } = this.props.gradient;
+    let range1 = range;
+    let {background} = this.state;
+    for (let i in range1) {
+      if (!range1[i].r || !range1[i].g || !range1[i].b) {
+        let hex = (range1[i].hex).replace('#', '');
+        range1[i].r = parseInt((hex).slice(0, 2), 16);
+        range1[i].g = parseInt((hex).slice(2, 4), 16);
+        range1[i].b = parseInt((hex).slice(4, 6), 16);
+        range1[i].a = 1;
+      } else {
+        range1[i].hex = this.rgbToHex(range1[i].r, range1[i].g, range1[i].b);
+      }
+    }
+
+    if (!range1[0].r || !range1[0].g || !range1[0].b) {
+      let hex = (range1[0].hex).replace('#', '');
+      let r = parseInt((hex).slice(0, 2), 16);
+      let g = parseInt((hex).slice(2, 4), 16);
+      let b = parseInt((hex).slice(4, 6), 16);
+      background = { rgba: { r: r, g: g, b: b, a: 1 }, hex: range1[0].hex };
+    } else {
+      let hex = this.rgbToHex(range1[0].r, range1[0].g, range1[0].b)
+      background = { rgba: { r: range1[0].r, g: range1[0].g, b: range1[0].b, a: range1[0].a }, hex: hex };
+    }
+
+    if (!palettle) {
+      palettle = ''
+    }
+    this.setState({ range: range1, angle: angle, background: background, gradient: type, palettle: palettle });
   }
 
   componentDidUpdate() {
@@ -441,7 +467,7 @@ export default class Slider extends React.Component {
             style={{ background: background1 }}
           />
           <div>
-            <Button chooseGradient={this.handleGradient} />
+            <Button chooseGradient={this.handleGradient} type={this.state.gradient} />
           </div>
           <div>
             <ManaualColor palettle={palettle} chooseManualColor={this.handleManualColor} newGradient={this.state.gradient} angle={this.state.angle} />

@@ -40,24 +40,26 @@ export default class ManualColor extends React.Component {
     let {gradient} = this.state;
     const {palettle} = this.props
     const Palettle = palettle;
-    if (gradient === 'linear') {
-      for (let i in Palettle) {
-        let backGround = `linear-gradient(${Palettle[i].angle}deg, rgba(${Palettle[i].color1.r},${Palettle[i].color1.g},${Palettle[i].color1.b},1) ${Palettle[i].color1.range}%, rgba(${Palettle[i].color2.r},${Palettle[i].color2.g},${Palettle[i].color2.b},1) ${Palettle[i].color2.range}%)`
-        arrayGradient.push(backGround)
-      };
-    } else {
-      for (let i in Palettle) {
-        let backGround = `radial-gradient(circle, rgba(${Palettle[i].color1.r},${Palettle[i].color1.g},${Palettle[i].color1.b},1) ${Palettle[i].color1.range}%, rgba(${Palettle[i].color2.r},${Palettle[i].color2.g},${Palettle[i].color2.b},1) ${Palettle[i].color2.range}%)`
-        arrayGradient.push(backGround)
-      };
+    if (palettle) {
+      if (gradient === 'linear') {
+        for (let i in Palettle) {
+          let backGround = `linear-gradient(${Palettle[i].angle}deg, rgba(${Palettle[i].color1.r},${Palettle[i].color1.g},${Palettle[i].color1.b},1) ${Palettle[i].color1.range}%, rgba(${Palettle[i].color2.r},${Palettle[i].color2.g},${Palettle[i].color2.b},1) ${Palettle[i].color2.range}%)`
+          arrayGradient.push(backGround)
+        };
+      } else {
+        for (let i in Palettle) {
+          let backGround = `radial-gradient(circle, rgba(${Palettle[i].color1.r},${Palettle[i].color1.g},${Palettle[i].color1.b},1) ${Palettle[i].color1.range}%, rgba(${Palettle[i].color2.r},${Palettle[i].color2.g},${Palettle[i].color2.b},1) ${Palettle[i].color2.range}%)`
+          arrayGradient.push(backGround)
+        };
+      }
+      return (
+        Object.values(Palettle).map((val, index) => {
+          return (
+            <div key={index} name='manualColor' className={style.manualColor} ref={ref => { this[`${index}`] = ref }} style={{background: arrayGradient[index]}} onClick={() => this.onClick(val, index)} />
+          )
+        })
+      )
     }
-    return (
-      Object.values(Palettle).map((val, index) => {
-        return (
-          <div key={index} name='manualColor' className={style.manualColor} ref={ref => { this[`${index}`] = ref }} style={{background: arrayGradient[index]}} onClick={() => this.onClick(val, index)} />
-        )
-      })
-    )
   }
 
   render() {

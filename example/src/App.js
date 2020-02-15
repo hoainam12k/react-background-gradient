@@ -7,55 +7,39 @@ export default class App extends Component {
   constructor() {
     super();
     this.state = {
-      range: [
-         {
-          offsetX: 15,
-          r: 34,
-          g: 27,
-          b: 32,
-          a: 1,
-          hex: '#221B20'
-        },
-         {
-          offsetX: 50,
-          r: 134,
-          g: 57,
-          b: 62,
-          a: 1,
-          hex: '#86393E'
-        }
-      ],
-      angle: 0,
       gradient: {
         range: [
           {
             offsetX: 15,
-            r: 34,
-            g: 27,
-            b: 32,
-            a: 1,
+            // r: 34,
+            // g: 27,
+            // b: 32,
+            // a: 1,
+            hex: '#221b20'
           },
           {
             offsetX: 50,
-            r: 134,
-            g: 57,
-            b: 62,
-            a: 1,
+            // r: 134,
+            // g: 57,
+            // b: 62,
+            // a: 1,
+            hex: '#86393E'
           }
         ],
-        angle: 0,
-        type: 'linear',
+        angle: 30,
+        type: 'radial',
         palettle: Palettle
       }
     }
   }
 
+  
   handleChange = (color) => {
     console.log(color)
   }
 
   render() {
-    // console.log(this.onChange)
+    // console.log(this.state.gradient)
     return (
       <div>
         <ExampleComponent gradient={this.state.gradient} onChange={this.handleChange} />      

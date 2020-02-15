@@ -6,15 +6,15 @@ export default class Circle extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      angle: 0
+      angle: ''
     }
   }
 
   // eslint-disable-next-line camelcase
   UNSAFE_componentWillMount() {
-    this.handleAngle()
     this.setState({ angle: this.props.angle })
-  }
+    // this.handleAngle()
+}
 
   mouseDown = (event) => {
     event.preventDefault();
