@@ -26,7 +26,7 @@ export default class App extends Component {
             hex: '#86393E'
           }
         ],
-        angle: 30,
+        angle: 90,
         type: 'radial',
         palettle: Palettle
       }
@@ -39,7 +39,6 @@ export default class App extends Component {
   }
 
   render() {
-    // console.log(this.state.gradient)
     return (
       <div>
         <ExampleComponent gradient={this.state.gradient} onChange={this.handleChange} />      

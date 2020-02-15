@@ -77,13 +77,11 @@ export default class Slider extends React.Component {
     }
     let {background} = this.state;
     background = {rgba: {r: color.rgb.r, g: color.rgb.g, b: color.rgb.b, a: color.rgb.a}, hex: color.rgb.hex};
-
     this.setState({ background: background, range: temp });
   };
 
   handleChange = (color) => {
     let background = {rgba: {r: color.rgb.r, g: color.rgb.g, b: color.rgb.b, a: color.rgb.a}, hex: color.hex};
-    this.props.onChange(this.props.gradient);
     this.setState({background: background})
   }
 
@@ -141,6 +139,7 @@ export default class Slider extends React.Component {
             }
           });
           let background = { rgba: { r: color[color.length - 1].r, g: color[color.length - 1].g, b: color[color.length - 1].b, a: color[color.length - 1].a }, hex: color[color.length - 1].hex };
+
           this.setState({
             range: newRange,
             rangeVal: key,
@@ -252,7 +251,6 @@ export default class Slider extends React.Component {
 
   // eslint-disable-next-line camelcase
   UNSAFE_componentWillMount() {
-    this.props.onChange(this.props.gradient);
     let { range, angle, type, palettle } = this.props.gradient;
     let range1 = range;
     let {background} = this.state;
@@ -332,6 +330,7 @@ export default class Slider extends React.Component {
     let background = { rgba: { r: color1.r, g: color1.g, b: color1.b, a: color1.a }, hex: color1.hex };
     this.setState({ range: range, angle: angle, background: background, first: 0, rangeVal: 0, change: true });
   }
+
   editAngle = (value) => {
     this.setState({ angle: value })
   }
@@ -409,6 +408,18 @@ export default class Slider extends React.Component {
     }
     background1 = background1.substring(0, background1.length - 1) + ')';
     background2 = background2.substring(0, background2.length - 1) + ')';
+
+    let newRangeColor = [];
+    for (let i in range) {
+      newRangeColor.push({offsetX: range[i].offsetX, r: range[i].r, g: range[i].g, b: range[i].b, a: range[i].a})
+    }
+    let colr = {
+      range: newRangeColor,
+      angle: this.state.angle,
+      type: this.state.gradient
+    }
+    this.props.onChange(colr);
+
     return (
       <div>
         <div className={style.slider}
