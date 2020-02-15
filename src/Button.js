@@ -6,7 +6,7 @@ export default class Button extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      val: 's'
+      val: ''
     }
   }
 
@@ -40,5 +40,6 @@ export default class Button extends React.Component {
 }
 
 Button.propTypes = {
-  chooseGradient: PropTypes.func
+  chooseGradient: PropTypes.func,
+  type: PropTypes.string
 }

@@ -39,6 +39,7 @@ export default class Table extends React.Component {
   // eslint-disable-next-line camelcase
   UNSAFE_componentWillMount() {
     let {range, active} = this.props;
+    console.log(range, active);
     let hex = [];
     for (let i in range) {
       if (Number(i) === Number(active)) {
@@ -89,6 +90,7 @@ export default class Table extends React.Component {
   // eslint-disable-next-line camelcase
   UNSAFE_componentWillReceiveProps(nextProps) {
     let range = nextProps.range;
+    console.log(range)
     for (let i in range) {
       range[i].hex = this.rgbToHex(range[i].r, range[i].g, range[i].b, range[i].a1)
     }
@@ -183,7 +185,7 @@ export default class Table extends React.Component {
             </td>
             <td><input
               style={{ height: '20px', width: '55px' }}
-              type='text' value={arrayOffsetX[index] || ''}
+              type='text' value={arrayOffsetX[index] || 0}
               onChange={this.onChangeStop(index)}
               onClick={() => { this.clickColorTable(val, val.key) }}
               onBlur={this.onBlurOffset(val)}
