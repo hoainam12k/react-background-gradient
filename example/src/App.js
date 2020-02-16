@@ -29,12 +29,14 @@ export default class App extends Component {
         angle: 90,
         type: 'radial',
         palettle: Palettle
-      }
+      },
+      gradient2:{}
     }
   }
 
   
   handleChange = (color) => {
+    this.setState({gradient2: color})
     console.log(color)
   }
 

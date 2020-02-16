@@ -74,5 +74,5 @@ export default class ManualColor extends React.Component {
 ManualColor.propTypes = {
   chooseManualColor: PropTypes.func.isRequired,
   newGradient: PropTypes.string.isRequired,
-  palettle: PropTypes.array
+  palettle: PropTypes.object
 }

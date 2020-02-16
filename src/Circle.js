@@ -12,9 +12,16 @@ export default class Circle extends React.Component {
 
   // eslint-disable-next-line camelcase
   UNSAFE_componentWillMount() {
+    // this.setState({ angle: this.props.angle })
+  }
+
+  shouldComponentUpdate() {
+    if (Number(this.state.angle) === Number(this.props.angle)) {
+      return false
+    }
     this.setState({ angle: this.props.angle })
-    // this.handleAngle()
-}
+    return true
+  }
 
   mouseDown = (event) => {
     event.preventDefault();

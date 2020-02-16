@@ -23,7 +23,9 @@ export default class Slider extends React.Component {
       gradient: 'linear',
       hex: 0,
       stop: 0,
-      change: false
+      change: false,
+      check: false,
+      click: false
     };
     this.isDragging = false;
   }
@@ -46,7 +48,7 @@ export default class Slider extends React.Component {
           newLeft = 500;
         }
         range[value].offsetX = newLeft / 5;
-        obj.setState({ range: range })
+        obj.setState({ range: range, check: true })
         obj[`${value}`].style.left = newLeft + 'px';
         this.isDragging = true;
       }
@@ -77,7 +79,7 @@ export default class Slider extends React.Component {
     }
     let {background} = this.state;
     background = {rgba: {r: color.rgb.r, g: color.rgb.g, b: color.rgb.b, a: color.rgb.a}, hex: color.rgb.hex};
-    this.setState({ background: background, range: temp });
+    this.setState({ background: background, range: temp, check: true });
   };
 
   handleChange = (color) => {
@@ -119,7 +121,8 @@ export default class Slider extends React.Component {
             range: newRange,
             rangeVal: key,
             first: key,
-            background: background
+            background: background,
+            check: true
           })
           this[`${this.state.first}`].style.border = '';
         } else
@@ -144,7 +147,8 @@ export default class Slider extends React.Component {
             range: newRange,
             rangeVal: key,
             first: Number(key),
-            background: background
+            background: background,
+            check: true
           })
           this[`${this.state.first}`].style.border = '';
         } else {
@@ -174,7 +178,8 @@ export default class Slider extends React.Component {
             range: newRange,
             rangeVal: key,
             first: Number(key),
-            background: background
+            background: background,
+            check: true
           })
           this[`${this.state.first}`].style.border = '';
         }
@@ -211,7 +216,7 @@ export default class Slider extends React.Component {
       if (Number(key) !== Number(first)) {
         this.setState({ range: range })
       } else {
-        this.setState({ range: range, first: Number(active) })
+        this.setState({ range: range, first: Number(active), check: true })
       }
     }
   }
@@ -282,9 +287,11 @@ export default class Slider extends React.Component {
     }
     this.setState({ range: range1, angle: angle, background: background, gradient: type, palettle: palettle });
   }
-
+  componentWillReceiveProps() {
+    this.setState({check: false})
+  }
   componentDidUpdate() {
-    let { range, first } = this.state
+    let { range, first, check } = this.state
     for (let i in range) {
       if (Number(i) === Number(first)) {
         this[first].style.border = '0.7px solid white';
@@ -292,10 +299,22 @@ export default class Slider extends React.Component {
         this[i].style.border = ''
       }
     }
+    if (check === true) {
+      let newRangeColor = [];
+      for (let i in range) {
+        newRangeColor.push({offsetX: range[i].offsetX, r: range[i].r, g: range[i].g, b: range[i].b, a: range[i].a})
+      }
+      let colr = {
+        range: newRangeColor,
+        angle: this.state.angle,
+        type: this.state.gradient
+      }
+      this.props.onChange(colr);
+    }
   }
 
   handleAngle = (angle) => {
-    this.setState({ angle: angle })
+    this.setState({ angle: angle, check: true })
   }
   handleGradient = (gradient) => {
     if (gradient === 'radial') {
@@ -328,7 +347,7 @@ export default class Slider extends React.Component {
     }
 
     let background = { rgba: { r: color1.r, g: color1.g, b: color1.b, a: color1.a }, hex: color1.hex };
-    this.setState({ range: range, angle: angle, background: background, first: 0, rangeVal: 0, change: true });
+    this.setState({ range: range, angle: angle, background: background, first: 0, rangeVal: 0, change: true, check: true });
   }
 
   editAngle = (value) => {
@@ -350,10 +369,10 @@ export default class Slider extends React.Component {
             }
           }
         }
-        this.setState({ range: range });
+        this.setState({ range: range, check: true });
       }
     } else {
-      this.setState({ range: range });
+      this.setState({ range: range, check: true });
     }
   }
 
@@ -381,18 +400,16 @@ export default class Slider extends React.Component {
           background.hex = color;
         }
       }
-      this.setState({ range: range, background: background });
+      this.setState({ range: range, background: background, check: true });
     } else {
-      this.setState({ range: range, background: background })
+      this.setState({ range: range, background: background, check: true })
     }
-  }
-  rangeChange = () => {
-    return this.state.range;
   }
 
   render() {
-    const { range, gradient } = this.state;
-    const {palettle} = this.props.gradient;
+    let { range, gradient } = this.state;
+    let {palettle} = this.props.gradient;
+    palettle = {...palettle};
     let val = Object.values(range);
     let background1 = '';
     if (gradient === 'linear') {
@@ -408,18 +425,6 @@ export default class Slider extends React.Component {
     }
     background1 = background1.substring(0, background1.length - 1) + ')';
     background2 = background2.substring(0, background2.length - 1) + ')';
-
-    let newRangeColor = [];
-    for (let i in range) {
-      newRangeColor.push({offsetX: range[i].offsetX, r: range[i].r, g: range[i].g, b: range[i].b, a: range[i].a})
-    }
-    let colr = {
-      range: newRangeColor,
-      angle: this.state.angle,
-      type: this.state.gradient
-    }
-    this.props.onChange(colr);
-
     return (
       <div>
         <div className={style.slider}
@@ -457,7 +462,7 @@ export default class Slider extends React.Component {
             />
           </div>
           <div className='circle-table'>
-            <Table range={this.state.range}
+            <Table range={{...this.state.range}}
               onClickColor={this.clickColorTable}
               onChangeStop={this.onChangeStop}
               active={Number(this.state.first)}

@@ -10,12 +10,13 @@ export default class Table extends React.Component {
       stop: 0,
       newActive: 'a',
       oldActive: 'b',
-      test: 0,
       turn: true,
       change: true,
       arrayHex: 0,
       arrayOffsetX: 0,
-      check: false
+      check: false,
+      type: '',
+      test: false
     }
   }
 
@@ -39,7 +40,6 @@ export default class Table extends React.Component {
   // eslint-disable-next-line camelcase
   UNSAFE_componentWillMount() {
     let {range, active} = this.props;
-    console.log(range, active);
     let hex = [];
     for (let i in range) {
       if (Number(i) === Number(active)) {
@@ -60,13 +60,20 @@ export default class Table extends React.Component {
 
   componentDidUpdate() {
     const {active} = this.props;
-    const {check, hex} = this.state
+    const {check, hex, test} = this.state
     const lengthRef = document.getElementsByName('hex').length;
     for (let i = 0; i < lengthRef; i++) {
       document.querySelector(`[data='${i}']`).style.border = '';
     }
     this[active].style.border = '2px solid white';
     if (check === true) {
+      for (let i in hex) {
+        this[`tr${hex[i].key}`].style.border = '';
+      }
+      this[`tr${active}`].style.border = '2px solid green';
+    }
+
+    if (test === true) {
       for (let i in hex) {
         this[`tr${hex[i].key}`].style.border = '';
       }
@@ -90,7 +97,6 @@ export default class Table extends React.Component {
   // eslint-disable-next-line camelcase
   UNSAFE_componentWillReceiveProps(nextProps) {
     let range = nextProps.range;
-    console.log(range)
     for (let i in range) {
       range[i].hex = this.rgbToHex(range[i].r, range[i].g, range[i].b, range[i].a1)
     }
@@ -117,7 +123,7 @@ export default class Table extends React.Component {
   }
 
   clickColorTable = (val, active) => {
-    this.setState({check: true})
+    this.setState({check: true, test: true})
     const lengthRef = document.getElementsByName('hex').length;
     this.props.onClickColor(val, active);
 
@@ -150,14 +156,27 @@ export default class Table extends React.Component {
   onBlurHex = (val) => {
     return e => {
       this.props.changeColorTable(val, e.target.value);
-      this.setState({check: true});
     }
   }
 
   onBlurOffset = (val) => {
     return e => {
       this.props.onChangeStop(val, e.target.value);
-      this.setState({check: true});
+    }
+  }
+
+  onKeyPress = (val) => {
+    return e => {
+      if (e.key === 'Enter') {
+        this.props.onChangeStop(val, e.target.value);
+      }
+    }
+  }
+  onKeyPressHex = (val) => {
+    return e => {
+      if (e.key === 'Enter') {
+        this.props.changeColorTable(val, e.target.value);
+      }
     }
   }
 
@@ -174,22 +193,24 @@ export default class Table extends React.Component {
               onClick={() => { this.clickColorTable(val, val.key) }}
               ref={ref => { this[val.key] = ref }} />
             <td >
-              <input style={{ height: '20px', width: '55px' }} type='text' name='hex' value={arrayHex[index] || ''}
+              <input style={{ height: '20px', width: '55px' }} name='hex' value={arrayHex[index] || ''}
                 onChange={this.changeColorTable(index)}
                 onClick={() => { this.clickColorTable(val, val.key) }}
                 defaultChecked={val.hex}
                 ref={ref => { this[`hex${val.key}`] = ref }}
                 onBlur={this.onBlurHex(val)}
+                onKeyPress={this.onKeyPressHex(val, 'arrayHex')}
 
               />
             </td>
             <td><input
               style={{ height: '20px', width: '55px' }}
-              type='text' value={arrayOffsetX[index] || 0}
+              value={arrayOffsetX[index] || ''}
               onChange={this.onChangeStop(index)}
               onClick={() => { this.clickColorTable(val, val.key) }}
               onBlur={this.onBlurOffset(val)}
               ref={ref => { this[`offset${val.key}`] = ref }}
+              onKeyPress={this.onKeyPress(val, 'offset')}
             />
             </td>
             <td><button onClick={() => this.deleteColor(val.key)}>Delete</button></td>
@@ -218,7 +239,7 @@ export default class Table extends React.Component {
 }
 
 Table.propTypes = {
-  range: PropTypes.array.isRequired,
+  range: PropTypes.object.isRequired,
   active: PropTypes.number.isRequired,
   onClickColor: PropTypes.func,
   onChangeStop: PropTypes.func,
