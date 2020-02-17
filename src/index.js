@@ -288,7 +288,7 @@ export default class Slider extends React.Component {
     this.setState({ range: range1, angle: angle, background: background, gradient: type, palettle: palettle });
   }
   componentWillReceiveProps() {
-    this.setState({check: false})
+    this.setState({check: 'false'})
   }
   componentDidUpdate() {
     let { range, first, check } = this.state

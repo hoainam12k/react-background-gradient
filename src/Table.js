@@ -199,18 +199,18 @@ export default class Table extends React.Component {
                 defaultChecked={val.hex}
                 ref={ref => { this[`hex${val.key}`] = ref }}
                 onBlur={this.onBlurHex(val)}
-                onKeyPress={this.onKeyPressHex(val, 'arrayHex')}
+                onKeyPress={this.onKeyPressHex(val)}
 
               />
             </td>
             <td><input
               style={{ height: '20px', width: '55px' }}
-              value={arrayOffsetX[index] || ''}
+              value={arrayOffsetX[index] || 0}
               onChange={this.onChangeStop(index)}
               onClick={() => { this.clickColorTable(val, val.key) }}
               onBlur={this.onBlurOffset(val)}
               ref={ref => { this[`offset${val.key}`] = ref }}
-              onKeyPress={this.onKeyPress(val, 'offset')}
+              onKeyPress={this.onKeyPress(val)}
             />
             </td>
             <td><button onClick={() => this.deleteColor(val.key)}>Delete</button></td>
